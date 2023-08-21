@@ -15,7 +15,7 @@ Chat with your favorite celebrities, fictional characters, and historical figure
 """
 
 openai_api_key = os.environ.get("OPENAI_API_KEY", "")
-with st.expander("🔑  Credentials", expanded=False if openai_api_key else True):
+with st.expander("🔑  Credentials", expanded=openai_api_key == ""):
     openai_api_key = st.text_input(
         label="OpenAI API Key",
         type="password",
@@ -24,7 +24,10 @@ with st.expander("🔑  Credentials", expanded=False if openai_api_key else True
         label_visibility="hidden",
     )
 
-agent = get_agent(openai_api_key)
+if openai_api_key != "":
+    agent = get_agent(openai_api_key)
+else:
+    agent = None
 
 # Settings
 with st.expander("⚙️  Settings"):
