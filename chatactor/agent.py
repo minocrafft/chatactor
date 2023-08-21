@@ -1,8 +1,6 @@
 from langchain import OpenAI
 from langchain.agents.agent import AgentExecutor
-from langchain.agents import AgentType, Tool, initialize_agent,load_tools
-from langchain.callbacks import StreamlitCallbackHandler
-from langchain.utilities import DuckDuckGoSearchAPIWrapper
+from langchain.agents import AgentType, initialize_agent,load_tools
 
 def get_agent(openai_api_key:str)-> AgentExecutor:
     llm = OpenAI(temperature=0.5, openai_api_key=openai_api_key, streaming=True)
