@@ -14,6 +14,15 @@ st.set_page_config(page_title="Chat Actor", page_icon="🦜", layout="centered")
 Chat with your favorite celebrities, fictional characters, and historical figures!
 """
 
+def is_key_valid(key: str) -> bool:
+    if len(key) == 0:
+        return False
+
+    if not key.startswith('sk-'):
+        return False
+
+    return True
+
 
 openai_api_key = os.getenv("OPENAI_API_KEY", "")
 with st.expander("🔑  Credentials", expanded=openai_api_key == ""):
@@ -21,14 +30,15 @@ with st.expander("🔑  Credentials", expanded=openai_api_key == ""):
         label="OpenAI API Key",
         type="password",
         help="Set this to start chatting!",
-        value=openai_api_key,
         label_visibility="hidden",
     )
 
-if openai_api_key != "" and not openai_api_key.startswith("sk-"):
-    agent = get_agent(openai_api_key)
-else:
-    agent = None
+    if is_key_valid(openai_api_key):
+        st.session_state.openai_api_key = openai_api_key
+        st.success("API key set!")
+    else:
+        st.warning("Invalid API key")
+
 
 # Settings
 with st.expander("⚙️  Settings"):
@@ -60,10 +70,12 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if prompt := st.chat_input(
+if (prompt := st.chat_input(
     placeholder="Type something to start chatting!",
-    disabled=not openai_api_key,
-):
+    disabled=not is_key_valid(openai_api_key),
+)) and st.session_state.openai_api_key:
+    agent = get_agent(st.session_state.openai_api_key)
+
     st.chat_message("user").write(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
 
