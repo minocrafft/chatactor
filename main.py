@@ -14,7 +14,8 @@ st.set_page_config(page_title="Chat Actor", page_icon="🦜", layout="centered")
 Chat with your favorite celebrities, fictional characters, and historical figures!
 """
 
-openai_api_key = os.environ.get("OPENAI_API_KEY", "")
+
+openai_api_key = os.getenv("OPENAI_API_KEY", "")
 with st.expander("🔑  Credentials", expanded=openai_api_key == ""):
     openai_api_key = st.text_input(
         label="OpenAI API Key",
@@ -24,7 +25,7 @@ with st.expander("🔑  Credentials", expanded=openai_api_key == ""):
         label_visibility="hidden",
     )
 
-if openai_api_key != "":
+if openai_api_key != "" and not openai_api_key.startswith("sk-"):
     agent = get_agent(openai_api_key)
 else:
     agent = None
