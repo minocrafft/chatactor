@@ -1,120 +1,70 @@
+import os
 from pathlib import Path
 
 import streamlit as st
+from langchain import OpenAI
+from langchain.agents import AgentType, Tool, initialize_agent,load_tools
+from langchain.callbacks import StreamlitCallbackHandler
+from langchain.utilities import DuckDuckGoSearchAPIWrapper
 
-st.set_page_config(page_title="MRKL", page_icon="🦜", layout="wide")
+from chatactor import playback_callbacks, with_clear_container, get_agent
 
-"# 🦜🔗 MRKL"
+st.set_page_config(page_title="Chat Actor", page_icon="🦜", layout="centered")
 
-"""
-This Streamlit app showcases a LangChain agent that replicates the
-[MRKL chain](https://arxiv.org/abs/2205.00445).
-
-This uses the [example Chinook database](https://github.com/lerocha/chinook-database).
-To set it up follow the instructions [here](https://database.guide/2-sample-databases-sqlite/),
-placing the .db file in the same directory as this app.
+"# 🦜🔗 Chat Actor"
 
 """
+Chat with your favorite celebrities, fictional characters, and historical figures!
+"""
 
-# Setup credentials in Streamlit
-user_openai_api_key = st.sidebar.text_input(
-    "OpenAI API Key", type="password", help="Set this to run your own custom questions."
-)
-
-if user_openai_api_key:
-    openai_api_key = user_openai_api_key
-    enable_custom = True
-else:
-    openai_api_key = "not_supplied"
-    enable_custom = False
-
-with st.expander("👉 View the source code"), st.echo():
-    # LangChain imports
-    from langchain import OpenAI
-    from langchain.agents import AgentType, Tool, initialize_agent,load_tools
-    from langchain.callbacks import StreamlitCallbackHandler
-    from langchain.utilities import DuckDuckGoSearchAPIWrapper
-
-    from chatactor import playback_callbacks
-
-    # Tools setup
-    search = DuckDuckGoSearchAPIWrapper(region="kr-kr")
-    llm = OpenAI(temperature=0, openai_api_key=openai_api_key, streaming=True)
-    tools = [
-        Tool(
-            name="Search",
-            func=search.run,
-            description="useful for when you need to answer questions about current events. You should ask targeted questions",
-        ),
-    ] + load_tools(["wikipedia"], llm=llm)
-
-    # Initialize agent
-    mrkl = initialize_agent(
-        tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
+openai_api_key = os.environ.get("OPENAI_API_KEY", None)
+with st.expander("🔑  Credentials", expanded=False if openai_api_key else True):
+    openai_api_key = st.text_input(
+        label="OpenAI API Key",
+        type="password",
+        help="Set this to start chatting!",
+        value=openai_api_key,
+        label_visibility="hidden",
     )
-    # To run the agent, use `mrkl.run(mrkl_input)`
 
-# More Streamlit here!
+agent = get_agent(openai_api_key)
 
-expand_new_thoughts = st.sidebar.checkbox(
-    "Expand New Thoughts",
-    value=True,
-    help="True if LLM thoughts should be expanded by default",
-)
+# Settings
+with st.expander("⚙️  Settings"):
+    expand_new_thoughts = st.checkbox(
+        "Expand New Thoughts",
+        value=True,
+        help="True if LLM thoughts should be expanded by default",
+    )
 
-collapse_completed_thoughts = st.sidebar.checkbox(
-    "Collapse Completed Thoughts",
-    value=True,
-    help="True if LLM thoughts should be collapsed when they complete",
-)
+    collapse_completed_thoughts = st.checkbox(
+        "Collapse Completed Thoughts",
+        value=True,
+        help="True if LLM thoughts should be collapsed when they complete",
+    )
 
-# collapse_thoughts_delay = st.sidebar.number_input(
-#     "Collapse Thoughts Delay",
-#     value=1.0,
-#     min_value=0.0,
-#     step=0.5,
-#     help="If Collapse Completed Thoughts is true, delay the collapse animation for this many seconds.",
-# )
+    max_thought_containers = st.number_input(
+        "Max Thought Containers",
+        value=4,
+        min_value=1,
+        help="Max number of completed thoughts to show. When exceeded, older thoughts will be moved into a 'History' expander.",
+    )
 
-max_thought_containers = st.sidebar.number_input(
-    "Max Thought Containers",
-    value=4,
-    min_value=1,
-    help="Max number of completed thoughts to show. When exceeded, older thoughts will be moved into a 'History' expander.",
-)
-
-SAVED_SESSIONS = {
-    "Who is Leo DiCaprio's girlfriend? What is her current age raised to the 0.43 power?": "leo.pickle",
-    "What is the full name of the artist who recently released an album called "
-    "'The Storm Before the Calm' and are they in the FooBar database? If so, what albums of theirs "
-    "are in the FooBar database?": "alanis.pickle",
-}
-
-key = "input"
-shadow_key = "_input"
-
-if key in st.session_state and shadow_key not in st.session_state:
-    st.session_state[shadow_key] = st.session_state[key]
-
+# Input
+user_input = None
 with st.form(key="form"):
-    if not enable_custom:
-        "Ask one of the sample questions, or enter your API Keys in the sidebar to ask your own custom questions."
-    prefilled = st.selectbox("Sample questions", sorted(SAVED_SESSIONS.keys())) or ""
-    mrkl_input = ""
+    if openai_api_key:
+        user_input = st.text_input("Submit to Chat!")
+        submit_clicked = st.form_submit_button("Submit Question")
+    else:
+        st.write("Please enter your OpenAI API Key!")
+        submit_clicked = st.form_submit_button(disabled=True)
 
-    if enable_custom:
-        mrkl_input = st.text_input("Or, ask your own question", key=shadow_key)
-        st.session_state[key] = mrkl_input
-    if not mrkl_input:
-        mrkl_input = prefilled
-    submit_clicked = st.form_submit_button("Submit Question")
 
 question_container = st.empty()
 results_container = st.empty()
 
 # A hack to "clear" the previous result when submitting a new prompt.
-from chatactor import with_clear_container
-
 if with_clear_container(submit_clicked):
     # Create our StreamlitCallbackHandler
     res = results_container.container()
@@ -125,18 +75,9 @@ if with_clear_container(submit_clicked):
         collapse_completed_thoughts=collapse_completed_thoughts,
     )
 
-    question_container.write(f"**Question:** {mrkl_input}")
+    question_container.write(f"**Question:** {user_input}")
 
     # If we've saved this question, play it back instead of actually running LangChain
     # (so that we don't exhaust our API calls unnecessarily)
-    if mrkl_input in SAVED_SESSIONS:
-        session_name = SAVED_SESSIONS[mrkl_input]
-        session_path = Path(__file__).parent / "runs" / session_name
-        print(f"Playing saved session: {session_path}")
-        answer = playback_callbacks(
-            [streamlit_handler], str(session_path), max_pause_time=3
-        )
-        res.write(f"**Answer:** {answer}")
-    else:
-        answer = mrkl.run(mrkl_input, callbacks=[streamlit_handler])
-        res.write(f"**Answer:** {answer}")
+    answer = agent.run(user_input, callbacks=[streamlit_handler])
+    res.write(f"**Answer:** {answer}")
