@@ -30,6 +30,7 @@ with st.expander("🔑  Credentials", expanded=openai_api_key == ""):
         label="OpenAI API Key",
         type="password",
         help="Set this to start chatting!",
+        value=openai_api_key,
         label_visibility="hidden",
     )
 
@@ -80,7 +81,12 @@ if (prompt := st.chat_input(
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("assistant"):
-        st_callback = StreamlitCallbackHandler(st.container())
+        st_callback = StreamlitCallbackHandler(
+            st.container(),
+            max_thought_containers=int(max_thought_containers),
+            expand_new_thoughts=expand_new_thoughts,
+            collapse_completed_thoughts=collapse_completed_thoughts,
+        )
         response = agent.run(prompt, callbacks=[st_callback])
         st.write(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
