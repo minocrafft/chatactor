@@ -2,10 +2,11 @@ import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 
 
-def initial_page():
-    # set page config
+def set_page_config():
     st.set_page_config(page_title="Chat Actor", page_icon="🦜")
 
+
+def initial_page():
     st.markdown(
         """
         # Welcome to 🦜Chat Actor!
