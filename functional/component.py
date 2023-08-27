@@ -15,7 +15,7 @@ def on_click_card(key):
     st.session_state.character = key
 
 
-def create_character(title: str, image: str, text: str, key: str):
+def create_card(title: str, image: str, text: str, key: str):
     with st.container():
         st.title(title)
         col1, col2 = st.columns(2)

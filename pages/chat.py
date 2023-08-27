@@ -1,7 +1,7 @@
 import time
 import streamlit as st
 from functional.page import set_page_config, initial_page, initial_session_state
-from functional.component import create_character
+from functional.component import create_card
 
 
 set_page_config()
@@ -40,12 +40,20 @@ def draw_main_page():
     )
 
 
-def draw_chat():
-    # Select Character pages
-    with st.spinner(f"{st.session_state.character} 님과 대화할 준비 중... :runner:"):
+def spinner(message: str):
+    # Draw chat with character pages
+    with st.spinner(message):
         time.sleep(2)
 
-    st.title(st.session_state.character)
+
+def draw_chat(character):
+    st.title(character)
+
+    # Display chat messages from history on app rerun
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
     st.chat_input("Message", key="message")
 
 
@@ -81,7 +89,7 @@ def draw_sidebar():
         st.header("Select your character")
 
         # Search for Databases later
-        create_character(
+        create_card(
             title="👨‍✈️  이순신 장군",
             image="static/general.png",
             text="""
@@ -96,7 +104,7 @@ def draw_sidebar():
             key="이순신 장군",
         )
 
-        create_character(
+        create_card(
             title="👑  세종대왕",
             image="static/user.png",
             text="""
@@ -124,8 +132,9 @@ if st.session_state.openai_api_key is None or not st.session_state.openai_api_ke
     st.caption("Please return to the home page and enter your :red[OpenAI API key].")
 else:
     draw_sidebar()
+    character = st.session_state.character
 
-    if not st.session_state.character:
+    if not character:
         draw_main_page()
     else:
-        draw_chat()
+        draw_chat(character)
