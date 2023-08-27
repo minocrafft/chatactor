@@ -16,6 +16,8 @@ streamlit = "^1.25.0"
 duckduckgo-search = "^3.8.5"
 wikipedia = "^1.4.0"
 langchain-experimental = "^0.0.10"
+streamlit-chat = "^0.1.1"
+streamlit-extras = "^0.3.0"
 
 
 [build-system]
