@@ -15,6 +15,26 @@ def load_img(file):
     return "data:image/png;base64," + encoded.decode("utf-8")
 
 
+def on_click_sejong_card():
+    if "character" not in st.session_state:
+        st.session_state.character = "sejong"
+        print("init current char: ", st.session_state.character)
+        return
+
+    st.session_state.character = "sejong"
+    print("current char: ", st.session_state.character)
+
+
+def on_click_yi_card():
+    if "character" not in st.session_state:
+        st.session_state.character = "yi"
+        print("init current char: ", st.session_state.character)
+        return
+
+    st.session_state.character = "yi"
+    print("current char: ", st.session_state.character)
+
+
 set_page_config()
 
 
@@ -28,7 +48,7 @@ if (
     st.caption("Please return to the home page and enter your :red[OpenAI API key].")
 else:
     # main pages
-    st.title("Chat Actor")
+    st.title(st.session_state.character or "Chat Actor")
     st.chat_input("Message", key="message")
 
     # sidebar
@@ -100,16 +120,20 @@ else:
             st.button("Select", key="sejong", type="primary")
 
         # character selection
-        card(
+        sejong = card(
             title="👑  King Sejong",
             text="The 4th king of the Joseon Dynasty",
             image=load_img("static/user.png"),
+            on_click=on_click_sejong_card,
+            key="card_sejong",
         )
 
-        card(
+        general_yi = card(
             title="👨🏻‍✈️  General Yi",
             text="The greatest admiral in Korean history",
             image=load_img("static/general.png"),
+            on_click=on_click_yi_card,
+            key="card_general_yi",
         )
 
         st.divider()
