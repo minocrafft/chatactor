@@ -1,5 +1,9 @@
 import time
 import streamlit as st
+from streamlit_chat import message
+from langchain.callbacks import StreamlitCallbackHandler
+
+from chatactor import get_agent
 from functional.page import set_page_config, initial_page, initial_session_state
 from functional.component import create_card
 
@@ -54,7 +58,23 @@ def draw_chat(character):
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    st.chat_input("Message", key="message")
+    agent = get_agent(st.session_state.openai_api_key)
+
+    prompt = st.chat_input("Message", key="message")
+    if prompt:
+        st.chat_message("user").write(prompt)
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+    with st.chat_message("assistant"):
+        st_callback = StreamlitCallbackHandler(
+            st.container(),
+            max_thought_containers=int(st.session_state.max_thought_containers),
+            expand_new_thoughts=st.session_state.expand_new_thoughts,
+            collapse_completed_thoughts=st.session_state.collapse_completed_thoughts,
+        )
+        response = agent.run(prompt, callbacks=[st_callback])
+        st.write(response)
+        st.session_state.messages.append({"role": "assistant", "content": response})
 
 
 def draw_sidebar():
@@ -64,19 +84,19 @@ def draw_sidebar():
 
         # Settings
         with st.expander("⚙️  Settings"):
-            expand_new_thoughts = st.checkbox(
+            st.session_state.expand_new_thoughts = st.checkbox(
                 "Expand New Thoughts",
                 value=True,
                 help="True if LLM thoughts should be expanded by default",
             )
 
-            collapse_completed_thoughts = st.checkbox(
+            st.session_state.collapse_completed_thoughts = st.checkbox(
                 "Collapse Completed Thoughts",
                 value=True,
                 help="True if LLM thoughts should be collapsed when they complete",
             )
 
-            max_thought_containers = st.number_input(
+            st.session_state.max_thought_containers = st.number_input(
                 "Max Thought Containers",
                 value=4,
                 min_value=1,
