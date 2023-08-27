@@ -12,10 +12,11 @@ initial_page()
 
 with st.container():
     # check api key
-    # apikey = os.getenv("OPENAI_API_KEY")
+    apikey = os.getenv("OPENAI_API_KEY")
     apikey = st.text_input(
         label="🔑 Credentials",
         type="password",
+        value=apikey,
         placeholder="Input your OpenAI API Key!",
     )
 
