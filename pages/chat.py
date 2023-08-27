@@ -60,10 +60,44 @@ else:
             )
 
         st.header("Select your character")
-        col1, col2 = st.columns(2)
 
-        with col1, st.container():
-            st.image(Image.open("static/general.png"))
+        with st.container():
+            col1, col2 = st.columns(2)
+            with col1:
+                st.title("👨‍✈️  General Yi")
+                st.image(Image.open("static/general.png"))
+            with col2:
+                st.markdown(
+                    """
+                    ||information|
+                    |---|---|
+                    |Name|General Yi|
+                    |Occupation|무신|
+                    |Tone|No information found|
+                    |Birth|1545-04-28|
+                    |Death|1598-12-16|
+                    """
+                )
+            st.button("Select", key="Yi", type="primary")
+
+        with st.container():
+            col1, col2 = st.columns(2)
+            with col1:
+                st.title("👑  King Sejong")
+                st.image(Image.open("static/user.png"))
+            with col2:
+                st.markdown(
+                    """
+                    ||information|
+                    |---|---|
+                    |Name|King sejong|
+                    |Occupation|King|
+                    |Tone|No information found|
+                    |Birth|NaN|
+                    |Death|Nan|
+                    """
+                )
+            st.button("Select", key="sejong", type="primary")
 
         # character selection
         card(
