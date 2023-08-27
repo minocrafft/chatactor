@@ -3,9 +3,10 @@ import time
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 
-from functional.pages import initial_page
+from functional.page import set_page_config, initial_page
 
 
+set_page_config()
 initial_page()
 
 

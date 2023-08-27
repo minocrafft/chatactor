@@ -1,5 +1,8 @@
 import streamlit as st
-from functional.pages import initial_page
+from functional.page import set_page_config, initial_page
+
+
+set_page_config()
 
 
 if (
@@ -12,3 +15,5 @@ if (
     st.caption("Please return to the home page and enter your :red[OpenAI API key].")
 else:
     st.title("Chat Actor")
+    st.sidebar.title("Enjoy your chat! 🎉")
+    st.chat_input("Message", key="message")
