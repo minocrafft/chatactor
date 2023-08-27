@@ -13,7 +13,6 @@ def load_img(file):
 
 def on_click_card(key):
     st.session_state.character = key
-    print("current char:", st.session_state.character)
 
 
 def create_character(title: str, image: str, text: str, key: str):

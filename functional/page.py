@@ -9,7 +9,7 @@ def set_page_config():
 def initial_page():
     st.markdown(
         """
-        # Welcome to 🦜Chat Actor!
+        # Welcome to 🦜 Chat Actor!
 
         This is a **:red[history studying platform]** based on role-playing chatbots 🤖.
 
@@ -17,7 +17,7 @@ def initial_page():
 
         To start, Please enter your **OpenAI API key** 🔑.
 
-        Enjoy your chat! 🎉
+        Enjoy our system! 🎉
 
         """
     )
