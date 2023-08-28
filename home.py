@@ -3,7 +3,7 @@ import time
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 
-from functional.page import set_page_config, initial_page, initial_session_state
+from functional.page import set_page_config, initial_page
 
 
 set_page_config()
@@ -33,4 +33,4 @@ with st.container():
             with st.spinner("Loading..."):
                 time.sleep(2)
 
-            switch_page("chat")
+            switch_page("characters")
