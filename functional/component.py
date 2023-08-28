@@ -1,7 +1,22 @@
+import time
 import base64
+from typing import Optional
+
+import pandas as pd
 import streamlit as st
 from PIL import Image
+from pydantic import BaseModel
 from streamlit_extras.switch_page_button import switch_page
+
+
+class Actor(BaseModel):
+    name: str
+    image: Optional[str]
+    occupation: Optional[str]
+    tone: Optional[str]
+    birth: Optional[str]
+    death: Optional[str]
+    summary: Optional[str]
 
 
 def load_img(file):
@@ -14,6 +29,11 @@ def load_img(file):
 
 def on_click_card(key):
     st.session_state.character = key
+
+
+def spinner(message: str):
+    with st.spinner(message):
+        time.sleep(2)
 
 
 def settings():
@@ -42,19 +62,27 @@ def settings():
         )
 
 
-def card(title: str, image: str, text: str, key: str):
+def card(actor: Actor):
     with st.container():
-        st.title(title)
+        st.subheader(actor.name)
         col1, col2 = st.columns(2)
         with col1:
-            st.image(Image.open(image))
-            st.button(
-                ":green[Let's chat !]",
-                key=key,
-                # type="primary",
-                on_click=lambda: on_click_card(key),
+            if actor.image:
+                st.image(Image.open(actor.image))
+            button = st.button(
+                "Let's chat !",
+                key=actor.name,
+                type="primary",
+                on_click=lambda: on_click_card(actor),
             )
         with col2:
-            st.markdown(text)
+            table = {k: v for k, v in actor if k not in ("name", "image")}
+            headers = ["information"]
+
+            df = pd.DataFrame.from_dict(table, orient="index", columns=headers)
+            st.markdown(df.to_markdown())
 
         st.divider()
+
+    if button:
+        switch_page("chat")

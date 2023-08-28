@@ -1,7 +1,11 @@
+import json
+from pathlib import Path
+
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
+from pydantic import ValidationError
 
-from functional.component import settings, card
+from functional.component import settings, card, Actor
 
 
 def set_page_config():
@@ -69,40 +73,22 @@ def description():
     )
 
 
-def characters_page():
-    st.title("Enjoy your character! 🎉")
-    st.header("Select your character")
+def actors_page():
+    st.title("캐릭터를 선택해주세요 :seedling:")
+
+    databases = "assets/"
+
+    actors = [str(file) for file in Path(databases).glob("*.json")]
 
     # Search for Databases later
-    card(
-        title="👨‍✈️  이순신 장군",
-        image="static/general.png",
-        text="""
-                ||information|
-                |---|---|
-                |Name|General Yi|
-                |Occupation|무신|
-                |Tone|No information found|
-                |Birth|1545-04-28|
-                |Death|1598-12-16|
-        """,
-        key="이순신 장군",
-    )
-
-    card(
-        title="👑  세종대왕",
-        image="static/user.png",
-        text="""
-                ||information|
-                |---|---|
-                |Name|King sejong|
-                |Occupation|King|
-                |Tone|No information found|
-                |Birth|NaN|
-                |Death|NaN|
-        """,
-        key="세종대왕",
-    )
+    for actor in actors:
+        with open(actor, "r") as file:
+            data = json.load(file)
+            print(data)
+            try:
+                card(Actor(**data))
+            except ValidationError as e:
+                print(e.json())
 
     st.header("or Input new character!")
     st.chat_input("Input new character", key="new_character")
