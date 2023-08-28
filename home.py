@@ -3,6 +3,7 @@ import time
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 
+from functional.component import spinner
 from functional.page import set_page_config, initial_page
 
 
@@ -30,7 +31,5 @@ with st.container():
             st.session_state.openai_api_key = apikey
             st.success("API key set! \n\nYou can start chatting now!")
 
-            with st.spinner("Loading..."):
-                time.sleep(2)
-
+            spinner("Loading...")
             switch_page("characters")

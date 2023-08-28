@@ -1,4 +1,3 @@
-import time
 import streamlit as st
 from streamlit_chat import message
 from langchain.callbacks import StreamlitCallbackHandler
@@ -7,24 +6,16 @@ from chatactor import get_agent
 from functional.page import (
     set_page_config,
     initial_page,
-    initial_session_state,
-    description,
+    draw_sidebar,
 )
-from functional.component import settings
+from functional.component import Actor
 
 
 set_page_config()
-initial_session_state()
 
 
-def spinner(message: str):
-    # Draw chat with character pages
-    with st.spinner(message):
-        time.sleep(2)
-
-
-def draw_chat(character):
-    st.title(character)
+def draw_chat(character: Actor):
+    st.title(character.name)
 
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:
@@ -57,9 +48,9 @@ if st.session_state.openai_api_key is None or not st.session_state.openai_api_ke
 else:
     character = st.session_state.character
 
-    with st.sidebar:
-        settings()
-        description()
+    draw_sidebar()
 
-    # if character:
-    #     draw_chat(character)
+    if not character:
+        st.markdown("캐릭터 화면으로 돌아가 캐릭터를 선택해주세요. :hugging_face:")
+    else:
+        draw_chat(character)
