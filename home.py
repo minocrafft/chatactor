@@ -32,4 +32,4 @@ with st.container():
             st.success("API key set! \n\nYou can start chatting now!")
 
             spinner("Loading...")
-            switch_page("characters")
+            switch_page("actors")
