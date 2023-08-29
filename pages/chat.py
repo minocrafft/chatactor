@@ -6,7 +6,6 @@ from chatactor import get_agent
 from functional.page import (
     set_page_config,
     description,
-    draw_sidebar,
 )
 
 from chatactor.model import Actor
