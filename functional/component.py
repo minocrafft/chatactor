@@ -1,10 +1,5 @@
 import time
-import pandas as pd
 import streamlit as st
-from streamlit_extras.switch_page_button import switch_page
-
-from chatactor.model import Actor
-from functional.utils import load_img_from_url
 
 
 def spinner(message: str):

@@ -9,7 +9,7 @@ from pydantic import ValidationError
 
 from chatactor.model import Actor
 from functional.utils import on_click_card
-from functional.component import settings  # , card
+from functional.component import settings
 
 
 COLS = 2
