@@ -1,1 +1,21 @@
-"{\n  \"name\": \"\uc77c\ub860 \uba38\uc2a4\ud06c\",\n  \"image\": \"https://upload.wikimedia.org/wikipedia/commons/e/ed/Elon_Musk_Royal_Society.jpg\",\n  \"occupation\": \"\uae30\uc5c5\uc778\",\n  \"summary\": \"\uc77c\ub860 \ub9ac\ube0c \uba38\uc2a4\ud06c\ub294 \ub0a8\uc544\ud504\ub9ac\uce74 \uacf5\ud654\uad6d \ucd9c\uc2e0 \ubbf8\uad6d\uc758 \uae30\uc5c5\uc778\uc774\ub2e4.\",\n  \"speaking style\": \"N/A\",\n  \"birth\": \"1971-06-28\",\n  \"death\": \"N/A\",\n  \"events\": [\n    {\n      \"event_name\": \"\ud2b8\uc704\ud130 \uc778\uc218\",\n      \"event_date\": \"2022-11-09\",\n      \"event_description\": \"\uc77c\ub860 \uba38\uc2a4\ud06c\uac00 440\uc5b5\ub2ec\ub7ec\uc5d0 \ud2b8\uc704\ud130\ub97c \uc778\uc218\ud588\ub2e4.\"\n    },\n    {\n      \"event_name\": \"\ud2b8\uc704\ud130 \uc778\ud130\ubdf0\",\n      \"event_date\": \"N/A\",\n      \"event_description\": \"\uc77c\ub860 \uba38\uc2a4\ud06c\uac00 \uc81c\uc784\uc2a4 \ud074\ub808\uc774\ud2bc BBC \uae30\uc790\uc640 1\uc2dc\uac04\uac00\ub7c9 \uc778\ud130\ubdf0\ud588\ub2e4.\"\n    }\n  ]\n}"
+{
+  "name": "일론 머스크",
+  "image": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Elon_Musk_Royal_Society.jpg",
+  "occupation": "기업인",
+  "summary": "일론 리브 머스크는 남아프리카 공화국 출신 미국의 기업인이다.",
+  "speaking style": "N/A",
+  "birth": "1971-06-28",
+  "death": "N/A",
+  "events": [
+    {
+      "event_name": "트위터 인수",
+      "event_date": "N/A",
+      "event_description": "세계에서 가장 부유한 일론 머스크가 440억달러에 트위터를 인수했다는 소식이 미국에 전해졌다."
+    },
+    {
+      "event_name": "트위터 CEO 인터뷰",
+      "event_date": "2022-11-12",
+      "event_description": "일론 머스크 트위터 CEO가 제임스 클레이튼 BBC 기자와 1시간가량 인터뷰했다. 트위터 내 혐오 발언, 지난 미 대선 등 각종 주제를 다룬 해당 인터뷰는 화제가 되었다."
+    }
+  ]
+}

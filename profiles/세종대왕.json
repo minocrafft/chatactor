@@ -1,1 +1,21 @@
-"{\n  \"name\": \"\uc138\uc885\ub300\uc655\",\n  \"image\": null,\n  \"occupation\": \"Ruler of Joseon, Inventor of Hangul\",\n  \"summary\": \"Sejong (Korean: \uc138\uc885; 15 May 1397 \u2013 8 April 1450), widely known as Sejong the Great (\uc138\uc885\ub300\uc655; \u4e16\u5b97\u5927\u738b; Sejong Daewang), was the fourth ruler of the Korean state Joseon and the inventor of the native Korean alphabet Hangul. Today, Sejong is regarded as one of the greatest leaders in Korean history.\",\n  \"speaking style\": null,\n  \"birth\": \"1397-05-15\",\n  \"death\": \"1450-04-08\",\n  \"events\": [\n    {\n      \"event_name\": \"Introduction of Hangul\",\n      \"event_date\": \"1443-00-00\",\n      \"event_description\": \"King Sejong the Great created Hangul in an attempt to increase literacy by serving as a complement (or alternative) to the logographic Sino-Korean Hanja.\"\n    },\n    {\n      \"event_name\": \"Samin Jeongchaek Policy\",\n      \"event_date\": \"Unknown\",\n      \"event_description\": \"Sejong instituted the Samin Jeongchaek policy to attract new settlers to the region.\"\n    },\n    {\n      \"event_name\": \"Subjugation of Japanese Pirates\",\n      \"event_date\": \"Unknown\",\n      \"event_description\": \"Sejong helped subjugate Japanese pirates during the \u014cei Invasion.\"\n    }\n  ]\n}"
+{
+  "name": "세종대왕",
+  "image": null,
+  "occupation": "King",
+  "summary": "Sejong (Korean: 세종; 15 May 1397 – 8 April 1450), widely known as Sejong the Great (세종대왕; 世宗大王; Sejong Daewang), was the fourth ruler of the Korean state Joseon and the inventor of the native Korean alphabet Hangul. Today, Sejong is regarded as one of the greatest leaders in Korean history.",
+  "speaking style": null,
+  "birth": "1397-05-15",
+  "death": "1450-04-08",
+  "events": [
+    {
+      "event_name": "Invention of Hangul",
+      "event_date": "1443",
+      "event_description": "Sejong created and promulgated the Korean alphabet, known as Hangul, in an attempt to increase literacy and as a complement to the logographic Sino-Korean Hanja."
+    },
+    {
+      "event_name": "Samguk Sagi Compilation",
+      "event_date": "1451",
+      "event_description": "After Sejong's death, the compilation of the Samguk Sagi, a historical record of the Three Kingdoms of Korea, was completed."
+    }
+  ]
+}

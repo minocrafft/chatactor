@@ -71,7 +71,8 @@ class Profiler(ZeroShotAgent):
 
 
 def get_profiler(
-    tools: List[Tool] | None, prompt: PromptTemplate | None
+    tools: List[Tool] | None,
+    prompt: PromptTemplate | None,
 ) -> AgentExecutor:
     if tools is None:
         tools = _build_tools()
@@ -96,5 +97,7 @@ if __name__ == "__main__":
     profiler = get_profiler(tools=tools, prompt=prompt)
 
     output = profiler.run("일론 머스크")
-    name = output.split('"name":')[-1].split('"')[1]
-    json.dump(output, open(f"profiles/{name}.json", "w"), indent=2)
+    person = json.loads(output)  # json str -> dict
+
+    with open(f"profiles/{person['name']}.json", "w") as f:
+        json.dump(person, f, indent=2, ensure_ascii=False)  # dict -> save as json file

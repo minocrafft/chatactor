@@ -1,1 +1,26 @@
-"{\n  \"name\": \"J. Robert Oppenheimer\",\n  \"image\": \"https://en.wikipedia.org/wiki/File:J._Robert_Oppenheimer,_c._1944.jpg\",\n  \"occupation\": \"Theoretical physicist\",\n  \"speaking style\": \"N/A\",\n  \"birth\": \"1904-04-22\",\n  \"death\": \"1967-02-18\",\n  \"events\": [\n    {\n      \"event_name\": \"Manhattan Project\",\n      \"event_date\": \"1942-1946\",\n      \"event_description\": \"Oppenheimer was appointed director of the Manhattan Project's Los Alamos Laboratory, tasked with developing the first nuclear weapons.\"\n    },\n    {\n      \"event_name\": \"Trinity Test\",\n      \"event_date\": \"1945-07-16\",\n      \"event_description\": \"Oppenheimer was present at the first test of the atomic bomb, Trinity.\"\n    },\n    {\n      \"event_name\": \"Bombings of Hiroshima and Nagasaki\",\n      \"event_date\": \"1945-08\",\n      \"event_description\": \"The atomic bombs developed by Oppenheimer's team were used against Japan in the bombings of Hiroshima and Nagasaki.\"\n    },\n    {\n      \"event_name\": \"Security Clearance Revocation\",\n      \"event_date\": \"1954\",\n      \"event_description\": \"Oppenheimer's security clearance was revoked following a 1954 security hearing, effectively ending his access to the government's atomic secrets.\"\n    }\n  ]\n}"
+{
+  "name": "J. Robert Oppenheimer",
+  "image": null,
+  "occupation": "Theoretical physicist",
+  "summary": "J. Robert Oppenheimer was an American theoretical physicist and director of the Manhattan Project's Los Alamos Laboratory during World War II. He is often called the \"father of the atomic bomb.\"",
+  "speaking style": null,
+  "birth": "1904-04-22",
+  "death": "1967-02-18",
+  "events": [
+    {
+      "event_name": "Manhattan Project",
+      "event_date": "1942-1946",
+      "event_description": "Oppenheimer was recruited to work on the Manhattan Project and was appointed director of the project's Los Alamos Laboratory. He played a crucial role in the development of the first nuclear weapons."
+    },
+    {
+      "event_name": "Trinity Test",
+      "event_date": "1945-07-16",
+      "event_description": "Oppenheimer was present at the first test of the atomic bomb, known as the Trinity Test."
+    },
+    {
+      "event_name": "Bombings of Hiroshima and Nagasaki",
+      "event_date": "1945-08",
+      "event_description": "The atomic bombs developed under Oppenheimer's leadership were used against Japan in the bombings of Hiroshima and Nagasaki."
+    }
+  ]
+}

@@ -1,1 +1,21 @@
-"{\n  \"name\": \"\uc774\uc21c\uc2e0\",\n  \"image\": null,\n  \"occupation\": \"\ubb34\uc2e0\",\n  \"summary\": \"\uc774\uc21c\uc2e0\uc740 \uc870\uc120 \uc911\uae30\uc758 \uc655\uc871, \ubb34\uc7a5, \uc720\ud559\uc790\uc774\ub2e4. \uc784\uc9c4\uc65c\ub780 \ub54c\uc5d0 \ud65c\ub3d9\ud558\ub358 \uc7a5\uc218\ub85c \uadf8\uc758 \uc0c1\uad00\uc774\uae30\ub3c4 \ud588\ub358 \ucda9\ubb34\uacf5 \uc774\uc21c\uc2e0 (\u674e\u821c\u81e3), \ub4f1\ub9bc\uc218 \uc774\uc21c\uc2e0 (\u674e\u821c\u81e3) \ub4f1\uacfc\uc758 \uad6c\ubcc4\uc744 \uc704\ud574 \ubb34\uc758\uacf5 \uc774\uc21c\uc2e0 , \uc785\ubd80 \uc774\uc21c\uc2e0 \uc73c\ub85c \ubd88\ub9b0\ub2e4.\",\n  \"speaking style\": null,\n  \"birth\": \"1545-04-28\",\n  \"death\": null,\n  \"events\": []\n}"
+{
+  "name": "이순신",
+  "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/%EC%9D%B4%EC%88%9C%EC%8B%A0.jpg/420px-%EC%9D%B4%EC%88%9C%EC%8B%A0.jpg",
+  "occupation": "Korean admiral and national hero",
+  "summary": "Yi Sun-shin, also spelled Yi Sun-sin, was a Korean admiral and national hero whose naval victories were instrumental in repelling Japanese invasions of Korea in the 1590s.",
+  "speaking style": "No information found",
+  "birth": "1545-04-28",
+  "death": "1598-12-16",
+  "events": [
+    {
+      "event_name": "임진왜란",
+      "event_date": "1592-1598",
+      "event_description": "Yi Sun-shin played a significant role in repelling Japanese invasions of Korea during the Imjin War."
+    },
+    {
+      "event_name": "명량 해전",
+      "event_date": "1597-08-14",
+      "event_description": "Yi Sun-shin achieved a decisive victory against the Japanese navy in the Battle of Myeongnyang."
+    }
+  ]
+}
