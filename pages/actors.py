@@ -1,20 +1,22 @@
 import streamlit as st
 
+from functional.component import settings
 from functional.page import (
     set_page_config,
     initial_session_state,
-    initial_page,
+    description,
     actors_page,
-    draw_sidebar,
 )
 
 set_page_config()
 initial_session_state()
 
 if st.session_state.openai_api_key is None or not st.session_state.openai_api_key:
-    initial_page()
+    description()
 
     st.caption("Please return to the home page and enter your :red[OpenAI API key].")
 else:
-    draw_sidebar()
+    with st.sidebar:
+        settings()
+
     actors_page()
