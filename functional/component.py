@@ -1,6 +1,6 @@
 import time
 import base64
-from typing import Optional
+from typing import Optional, List
 
 import pandas as pd
 import streamlit as st
@@ -9,14 +9,22 @@ from pydantic import BaseModel
 from streamlit_extras.switch_page_button import switch_page
 
 
+class Event(BaseModel):
+    event_name: str
+    event_date: str
+    event_description: str
+
+
 class Actor(BaseModel):
     name: str
-    image: Optional[str]
-    occupation: Optional[str]
-    tone: Optional[str]
-    birth: Optional[str]
-    death: Optional[str]
-    summary: Optional[str]
+    image: Optional[str] = None
+    occupation: Optional[str] = None
+    summary: Optional[str] = None
+    tone: Optional[str] = None
+    speaking_style: Optional[str] = None
+    birth: Optional[str] = None
+    death: Optional[str] = None
+    events: Optional[List[Event]] = []
 
 
 def load_img(file):
