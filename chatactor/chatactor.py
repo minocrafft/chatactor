@@ -10,7 +10,7 @@ from langchain.prompts import (
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 
-from functional.component import Actor
+from .model import Actor
 
 
 def _build_prompt(actor: Actor) -> str:
