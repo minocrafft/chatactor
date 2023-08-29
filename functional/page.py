@@ -1,11 +1,19 @@
+import math
 import json
 from pathlib import Path
 
 import streamlit as st
+from streamlit_card import card
 from streamlit_extras.switch_page_button import switch_page
 from pydantic import ValidationError
 
-from functional.component import settings, card, Actor
+from chatactor.model import Actor
+from functional.utils import on_click_card
+from functional.component import settings  # , card
+
+
+COLS = 2
+DB_ACTORS = "profiles/"
 
 
 def set_page_config():
@@ -21,24 +29,6 @@ def initial_session_state():
 
     if "character" not in st.session_state:
         st.session_state.character = ""
-
-
-def initial_page():
-    st.markdown(
-        """
-        # Welcome to 🦜 Chat Actor!
-
-        This is a **:red[history studying platform]** based on role-playing chatbots 🤖.
-
-        You can learn history by chatting with a chatbot that acts as a historical figure.
-
-        To start, Please enter your **OpenAI API key** 🔑.
-
-        Enjoy our system! 🎉
-
-        """
-    )
-    st.divider()
 
 
 def description():
@@ -67,7 +57,7 @@ def description():
 
         ---
 
-        ## 지금 시작해보세요! :rocket:
+        ### 지금 시작해보세요! :rocket:
 
         """
     )
@@ -76,24 +66,41 @@ def description():
 def actors_page():
     st.title("캐릭터를 선택해주세요 :seedling:")
 
-    databases = "assets/"
+    actors = [str(file) for file in Path(DB_ACTORS).glob("*.json")]
+    rows = math.ceil(len(actors) / COLS)
+    columns = {i: st.columns(COLS) for i in range(rows)}
 
-    actors = [str(file) for file in Path(databases).glob("*.json")]
+    i = 0
+    for row in range(rows):
+        for col in columns[row]:
+            with col, open(actors[i], "r") as file:
+                model = Actor(**json.load(file))
 
-    # Search for Databases later
-    for actor in actors:
-        with open(actor, "r") as file:
-            data = json.load(file)
-            print(data)
-            try:
-                card(Actor(**data))
-            except ValidationError as e:
-                print(e.json())
+                clicked = card(
+                    title=model.name,
+                    image=model.image,
+                    text=model.summary,
+                    styles={
+                        "card": {
+                            "width": "100%",
+                            "height": "400px",
+                            "margin": "0px",
+                            "padding": "0px",
+                        }
+                    },
+                    on_click=lambda: on_click_card(model),
+                )
 
+                if clicked:
+                    switch_page("chat")
+
+                i += 1
+                if i >= len(actors):
+                    break
+
+    st.divider()
     st.header("or Input new character!")
     st.chat_input("Input new character", key="new_character")
-
-    # if input the character name, append to the databases according to template
 
 
 def draw_sidebar():
