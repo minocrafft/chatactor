@@ -1,1 +1,1 @@
-from .agent import get_agent
+from .profiler import get_profiler
