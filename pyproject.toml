@@ -19,7 +19,7 @@ langchain-experimental = "^0.0.10"
 streamlit-chat = "^0.1.1"
 streamlit-extras = "^0.3.0"
 pydantic = "^2.3.0"
-pandas = "^2.0.3"
+streamlit-card = "^0.0.61"
 
 
 [build-system]
