@@ -21,7 +21,7 @@ def wikipedia2markdown(
 
     wiki = wikipediaapi.Wikipedia(
         "CoolBot/0.0 (https://example.org/coolbot/; coolbot@example.org)",
-        region=region,
+        language=region,
         extract_format=wikipediaapi.ExtractFormat.HTML,
     )
 

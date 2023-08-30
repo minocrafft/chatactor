@@ -11,10 +11,9 @@ def on_click_card(model):
     st.session_state.character = model
 
 
-def on_input_new_character(name):
-    if wikipedia2markdown(query=name)
+def on_click_new_character(name):
+    if wikipedia2markdown(query=name):
         st.success("New character added!")
-        st.experimental_rerun()
     else:
         st.error("Failed to add a new character...  \n\nPlease try again.")
 

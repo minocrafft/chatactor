@@ -6,7 +6,7 @@ from streamlit_card import card
 from streamlit_extras.switch_page_button import switch_page
 
 from chatactor.model import Actor, CardModel
-from functional.utils import on_click_card, divide_list, on_input_new_character
+from functional.utils import on_click_card, divide_list, on_click_new_character
 
 from functional.component import settings
 from functional.page import (
@@ -63,16 +63,22 @@ else:
                     switch_page("chat")
 
     st.divider()
-    new_character = st.text_input(
-        label="새로운 캐릭터를 입력해보세요 :hatching_chick:",
-        placeholder="Here!",
-        key="new_character",
-        help="""
-        새로운 캐릭터를 입력하면 해당 캐릭터의 프로필을 생성합니다.
 
-        현재 새로운 캐릭터는 Wikipedia에서 찾을 수 있는 인물만 생성할 수 있습니다:exclamation: 
-        """,
-    )
+    col1, col2 = st.columns([4, 1])
+    with col1:
+        new_character = st.text_input(
+            label="새로운 캐릭터를 입력해보세요 :hatching_chick:",
+            placeholder="Here!",
+            help="""
+            새로운 캐릭터를 입력하면 해당 캐릭터의 프로필을 생성합니다.
 
-    if new_character:
-        on_input_new_character(new_character)
+            현재 새로운 캐릭터는 Wikipedia에서 찾을 수 있는 인물만 생성할 수 있습니다:exclamation: 
+            """,
+        )
+
+    with col2:
+        button = st.button(
+            "Submit",
+            type="primary",
+            on_click=lambda: on_click_new_character(new_character),
+        )
