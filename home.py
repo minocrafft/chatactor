@@ -9,10 +9,11 @@ from functional.utils import validate_openai_api_key
 
 
 set_page_config()
-description()
 
 
 with st.container():
+    description()
+
     # check api key
     apikey = os.getenv("OPENAI_API_KEY")
     apikey = st.text_input(
@@ -25,7 +26,6 @@ with st.container():
     submit = st.button("Submit", type="primary")
 
     if submit:
-        # if apikey is None or not apikey or not apikey.startswith("sk-"):
         if not validate_openai_api_key(apikey):
             st.session_state.openai_api_key = None
             st.warning("Invalid OpenAI API Key...  \n\nPlease try again.")
