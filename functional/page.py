@@ -1,19 +1,4 @@
-import math
-import json
-from pathlib import Path
-
 import streamlit as st
-from streamlit_card import card
-from streamlit_extras.switch_page_button import switch_page
-from pydantic import ValidationError
-
-from chatactor.model import Actor
-from functional.utils import on_click_card
-from functional.component import settings
-
-
-COLS = 2
-DB_ACTORS = "profiles/"
 
 
 def set_page_config():
@@ -61,49 +46,3 @@ def description():
 
         """
     )
-
-
-def actors_page():
-    st.title("캐릭터를 선택해주세요 :seedling:")
-
-    actors = [str(file) for file in Path(DB_ACTORS).glob("*.json")]
-    rows = math.ceil(len(actors) / COLS)
-    columns = {i: st.columns(COLS) for i in range(rows)}
-
-    i = 0
-    for row in range(rows):
-        for col in columns[row]:
-            with col, open(actors[i], "r") as file:
-                model = Actor(**json.load(file))
-
-                clicked = card(
-                    title=model.name,
-                    image=model.image,
-                    text=model.summary,
-                    styles={
-                        "card": {
-                            "width": "100%",
-                            "height": "400px",
-                            "margin": "0px",
-                            "padding": "0px",
-                        }
-                    },
-                    on_click=lambda: on_click_card(model),
-                )
-
-                if clicked:
-                    switch_page("chat")
-
-                i += 1
-                if i >= len(actors):
-                    break
-
-    st.divider()
-    st.header("or Input new character!")
-    st.chat_input("Input new character", key="new_character")
-
-
-def draw_sidebar():
-    with st.sidebar:
-        settings()
-        description()
