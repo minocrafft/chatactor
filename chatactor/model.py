@@ -17,3 +17,9 @@ class Actor(BaseModel):
     birth: Optional[str] = None
     death: Optional[str] = None
     events: Optional[List[Event]] = None
+
+
+class CardModel(BaseModel):
+    name: str
+    content: str
+    summary: Optional[str] = None
