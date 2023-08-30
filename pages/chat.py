@@ -5,10 +5,11 @@ from langchain.callbacks import StreamlitCallbackHandler
 from chatactor import get_agent
 from functional.page import (
     set_page_config,
-    initial_page,
-    draw_sidebar,
+    description,
 )
-from functional.component import Actor
+
+from chatactor.model import Actor
+from functional.component import settings
 
 
 set_page_config()
@@ -42,15 +43,16 @@ def draw_chat(character: Actor):
 
 
 if st.session_state.openai_api_key is None or not st.session_state.openai_api_key:
-    initial_page()
+    description()
 
     st.caption("Please return to the home page and enter your :red[OpenAI API key].")
 else:
     character = st.session_state.character
 
-    draw_sidebar()
+    with st.sidebar:
+        settings()
 
     if not character:
-        st.markdown("캐릭터 화면으로 돌아가 캐릭터를 선택해주세요. :hugging_face:")
+        st.subheader("캐릭터 화면으로 돌아가 캐릭터를 선택해주세요. :hugging_face:")
     else:
         draw_chat(character)

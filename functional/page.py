@@ -1,11 +1,4 @@
-import json
-from pathlib import Path
-
 import streamlit as st
-from streamlit_extras.switch_page_button import switch_page
-from pydantic import ValidationError
-
-from functional.component import settings, card, Actor
 
 
 def set_page_config():
@@ -21,24 +14,6 @@ def initial_session_state():
 
     if "character" not in st.session_state:
         st.session_state.character = ""
-
-
-def initial_page():
-    st.markdown(
-        """
-        # Welcome to 🦜 Chat Actor!
-
-        This is a **:red[history studying platform]** based on role-playing chatbots 🤖.
-
-        You can learn history by chatting with a chatbot that acts as a historical figure.
-
-        To start, Please enter your **OpenAI API key** 🔑.
-
-        Enjoy our system! 🎉
-
-        """
-    )
-    st.divider()
 
 
 def description():
@@ -67,36 +42,7 @@ def description():
 
         ---
 
-        ## 지금 시작해보세요! :rocket:
+        ### 지금 시작해보세요! :rocket:
 
         """
     )
-
-
-def actors_page():
-    st.title("캐릭터를 선택해주세요 :seedling:")
-
-    databases = "assets/"
-
-    actors = [str(file) for file in Path(databases).glob("*.json")]
-
-    # Search for Databases later
-    for actor in actors:
-        with open(actor, "r") as file:
-            data = json.load(file)
-            print(data)
-            try:
-                card(Actor(**data))
-            except ValidationError as e:
-                print(e.json())
-
-    st.header("or Input new character!")
-    st.chat_input("Input new character", key="new_character")
-
-    # if input the character name, append to the databases according to template
-
-
-def draw_sidebar():
-    with st.sidebar:
-        settings()
-        description()
