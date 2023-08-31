@@ -1,16 +1,21 @@
+import os
 import json
+from pathlib import Path
 
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.vectorstores import FAISS
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.agents.agent_toolkits import create_retriever_tool
 from langchain.chat_models import ChatOpenAI
-from langchain.prompts import (
-    ChatPromptTemplate,
-    MessagesPlaceholder,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
+from langchain.agents.openai_functions_agent.agent_token_buffer_memory import (
+    AgentTokenBufferMemory,
 )
-from langchain.chains import LLMChain
-from langchain.memory import ConversationBufferMemory
-
+from langchain.agents.openai_functions_agent.base import OpenAIFunctionsAgent
+from langchain.schema.messages import SystemMessage
+from langchain.prompts import MessagesPlaceholder
 from .model import Actor
+from langchain.agents import AgentExecutor
 
 
 def _build_prompt(actor: Actor) -> str:
@@ -35,53 +40,90 @@ def _build_prompt(actor: Actor) -> str:
     prompt += """
 
     당신은 역사적인 인물 또는 유명인으로써 사용자와 대화를 나누고 있다.
-    항상 한국어로 답하고, 해요체를 사용해라.
+    항상 한국어로 답하고, 인물의 시대적인 말투를 사용해라.
     당신은 역사적인 사실에 기반하지 않은 대답을 할 수 없다.
     """
+
     return prompt
 
 
-def get_chatactor(actor: Actor) -> LLMChain:
-    prompt = _build_prompt(actor)
+def get_chatactor(name: str, profiles_path: Path) -> AgentExecutor:
+    """
+    Returns a chatactor agent executor.
 
-    memory = ConversationBufferMemory()
+    Args:
+        name: Name of the chatactor.
+        profiles_path: Path to the profiles directory.
+    Returns:
+        agent_executor: Agent executor for the chatactor.
+    """
 
-    llm = ChatOpenAI()
+    name_md = Path(f"{name}.md")
+    name_json = Path(f"{name}.json")
 
-    prompt_template = ChatPromptTemplate(
-        messages=[
-            SystemMessagePromptTemplate.from_template(prompt),
-            MessagesPlaceholder(variable_name="chat_history"),
-            HumanMessagePromptTemplate.from_template("{question}"),
-        ],
-        input_variables=["question", "chat_history"],
-    )
+    if not profiles_path.is_dir():
+        profiles_path.mkdir()
 
-    memory = ConversationBufferMemory(
-        memory_key="chat_history",
-        return_messages=True,
-    )
+    if not (profiles_path / name_md).exists():
+        raise ValueError(f"{name}.md is not found in profiles.")
 
-    chatactor_chain = LLMChain(
-        llm=llm, prompt=prompt_template, verbose=True, memory=memory
-    )
+    if not (profiles_path / name_json).exists():
+        raise ValueError(f"{name}.json is not found in profiles.")
 
-    return chatactor_chain
-
-
-if __name__ == "__main__":
-    path = "profiles/세종대왕.json"
     actor = Actor(
         **json.load(
             open(
-                path,
+                str(profiles_path / name_json),
                 "r",
                 encoding="utf-8",
             )
         )
     )
-    chatactor = get_chatactor(actor)
 
-    print(chatactor({"question": "당신에 대해 알려주세요."})["text"])
-    print(chatactor({"question": "왜 한글을 만드셨나요?"})["text"])
-    print(chatactor({"question": "함께 작업한 사람은 누구인가요?"})["text"])
+    # Tools
+    loader = TextLoader(file_path=str(profiles_path / name_md))
+    documents = loader.load()
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.split_documents(documents)
+    embeddings = OpenAIEmbeddings()
+    db = FAISS.from_documents(texts, embeddings)
+    retriever = db.as_retriever()
+    tool = create_retriever_tool(
+        retriever,
+        "search_history",
+        f"Searches and returns history documents regarding the {actor.name}.",
+    )
+    tools = [tool]
+
+    # LLM
+    llm = ChatOpenAI(model="gpt-4", temperature=0)
+
+    # Prompt
+    memory_key = "chat_history"
+    memory = AgentTokenBufferMemory(memory_key=memory_key, llm=llm)
+    system_message = SystemMessage(
+        content=_build_prompt(actor),
+    )
+    prompt = OpenAIFunctionsAgent.create_prompt(
+        system_message=system_message,
+        extra_prompt_messages=[MessagesPlaceholder(variable_name=memory_key)],
+    )
+
+    # Agent
+    agent = OpenAIFunctionsAgent(llm=llm, tools=tools, prompt=prompt)
+    agent_executor = AgentExecutor(
+        agent=agent,
+        tools=tools,
+        memory=memory,
+        verbose=True,
+        return_intermediate_steps=True,
+    )
+
+    return agent_executor
+
+
+if __name__ == "__main__":
+    name = "이순신"
+    path = Path("profiles")
+    chatactor = get_chatactor(name, path)
+    chatactor({"input": "당신은 어떤 사람인가요?"})
