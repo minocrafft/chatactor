@@ -56,7 +56,7 @@ def draw_chat():
             st.write(output)
             st.session_state.messages.append({"role": "assistant", "content": output})
     else:
-        st.caption("Please enter a message to begin chatting.")
+        st.caption(f"{st.session_state.actor.name}과 대화를 시작해보세요. :hugging_face:")
 
 
 if (
