@@ -1,3 +1,4 @@
+import json
 import base64
 import os.path as osp
 from urllib import request
@@ -7,23 +8,25 @@ import streamlit as st
 from duckduckgo_search import DDGS
 
 from chatactor.wikipedia import wikipedia2markdown
+from chatactor.profiler import get_profiler
+from functional.variables import DATADIR
 
 
 def on_click_card(model):
     st.session_state.actor = model
 
 
-def add_new_character(key):
-    # data = {
-    #     "name": name,
-    #     "image": search_images(name, count=1)[0].url)
-    #
-    # }
-    with st.spinner():
+def submit_new_actor(key):
+    with st.spinner("캐릭터를 생성중입니다... :runner:"):
         if not wikipedia2markdown(query=key):
             st.error(f"{key}: Character does not found...  \n\nPlease try again.")
         else:
             download_images(key)
+            output = get_profiler().run(key)
+            summary = json.loads(output)  # json str -> dict
+            with open(f"{DATADIR}/{key}.json", "w") as f:
+                json.dump(summary, f, indent=2, ensure_ascii=False)  # save as json file
+
             st.success("New character added!")
 
 
@@ -69,8 +72,8 @@ def search_images(keywords, count=5):
         return [next(ddgs_images_gen) for _ in range(count)]
 
 
-def download_images(keywords: str, path: str = "profiles", count: int = 3):
-    filepath = osp.join("profiles", f"{keywords}.jpg")
+def download_images(keywords: str, path: str = DATADIR, count: int = 3):
+    filepath = osp.join(path, f"{keywords}.jpg")
     try:
         images = search_images(keywords, count)
         for img in images:

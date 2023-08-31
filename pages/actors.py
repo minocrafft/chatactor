@@ -4,26 +4,17 @@ from pathlib import Path
 import streamlit as st
 from streamlit_card import card
 from streamlit_extras.switch_page_button import switch_page
-from PIL import Image
 
 from chatactor.model import Actor, CardModel
+from functional.variables import COLS, DATADIR
 from functional.utils import (
     on_click_card,
     divide_list,
-    add_new_character,
+    submit_new_actor,
     load_image,
-    download_images,
 )
-
 from functional.component import settings
-from functional.page import (
-    set_page_config,
-    initial_session_state,
-    description,
-)
-
-COLS = 2
-PATH_ACTORS = "profiles"
+from functional.page import set_page_config, initial_session_state, description
 
 
 set_page_config()
@@ -39,24 +30,27 @@ else:
 
     st.title("캐릭터를 선택해주세요 :seedling:")
 
-    actors = [f"{PATH_ACTORS}/{file.stem}" for file in Path(PATH_ACTORS).glob("*.md")]
+    actors = [f"{DATADIR}/{file.stem}" for file in Path(DATADIR).glob("*.md")]
 
     for row in divide_list(actors, COLS):
         columns = st.columns(COLS)
         for file, col in zip(row, columns):
-            with col, open(f"{file}.md", "r") as f:
-                # model = Actor(**json.load(f))
-                model = CardModel(
-                    name=file.split("/")[1],
+            with col, open(f"{file}.json", "r") as f:
+                model = Actor(**json.load(f))
+                cardmodel = CardModel(
+                    name=model.name,
                     image=f"{file}.jpg",
                     imagedata=load_image(f"{file}.jpg"),
-                    content=f.read(),
+                    content=[
+                        model.occupation,
+                        f"{model.birth} ~ {model.death if model.death else '현재'}",
+                        model.summary,
+                    ],
                 )
-
                 clicked = card(
-                    title=model.name,
-                    text="",
-                    image=model.imagedata,
+                    title=cardmodel.name,
+                    text=cardmodel.content,
+                    image=cardmodel.imagedata,
                     styles={
                         "card": {
                             "width": "100%",
@@ -65,7 +59,7 @@ else:
                             "padding": "0px",
                         }
                     },
-                    on_click=lambda: on_click_card(model),
+                    on_click=lambda: on_click_card(cardmodel),
                 )
 
                 if clicked:
@@ -89,5 +83,5 @@ else:
         button = st.button(
             "Submit",
             type="primary",
-            on_click=lambda: add_new_character(new_character),
+            on_click=lambda: submit_new_actor(new_character),
         )

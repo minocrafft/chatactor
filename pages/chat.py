@@ -23,13 +23,7 @@ def draw_prechat():
             st.image(st.session_state.actor.image, width=300)
 
         with col2:
-            st.markdown(
-                """
-                * test
-                * test
-                * test
-                """
-            )
+            st.markdown("\n\n * ".join(st.session_state.actor.content))
 
 
 def draw_chat():
