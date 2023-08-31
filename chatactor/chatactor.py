@@ -89,7 +89,7 @@ def get_chatactor(
     documents = loader.load()
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     texts = text_splitter.split_documents(documents)
-    embeddings = OpenAIEmbeddings()
+    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     db = FAISS.from_documents(texts, embeddings)
     retriever = db.as_retriever()
     tool = create_retriever_tool(

@@ -1,3 +1,4 @@
+import os
 import json
 
 from langchain.agents import ZeroShotAgent, Tool, AgentExecutor
@@ -65,12 +66,19 @@ class Profiler(ZeroShotAgent):
 def get_profiler(
     tools: list[Tool] | None = None,
     prompt: PromptTemplate | None = None,
+    openai_api_key: str | None = None,
 ) -> AgentExecutor:
     if tools is None:
         tools = _build_tools()
 
     if prompt is None:
         prompt = _build_prompt()
+
+    if openai_api_key is None:
+        if os.getenv("OPENAI_API_KEY") is None:
+            raise ValueError("OPENAI_API_KEY is not set.")
+        else:
+            openai_api_key = os.getenv("OPENAI_API_KEY")
 
     llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k")
     llm_chain = LLMChain(llm=llm, prompt=prompt)

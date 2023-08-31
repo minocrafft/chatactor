@@ -16,13 +16,13 @@ def on_click_card(model):
     st.session_state.actor = model
 
 
-def submit_new_actor(key):
+def submit_new_actor(key, openai_api_key):
     with st.spinner("캐릭터를 생성중입니다... :runner:"):
         if not wikipedia2markdown(query=key):
             st.error(f"{key}: Character does not found...  \n\nPlease try again.")
         else:
             download_images(key)
-            output = get_profiler().run(key)
+            output = get_profiler(openai_api_key=openai_api_key).run(key)
             summary = json.loads(output)  # json str -> dict
             with open(f"{DATADIR}/{key}.json", "w") as f:
                 json.dump(summary, f, indent=2, ensure_ascii=False)  # save as json file
