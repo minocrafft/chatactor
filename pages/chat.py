@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_chat import message
 from langchain.callbacks import StreamlitCallbackHandler
+from PIL import Image
 
 from chatactor import get_agent
 from functional.page import (
@@ -15,8 +16,24 @@ from functional.component import settings
 set_page_config()
 
 
-def draw_chat(character: Actor):
-    st.title(character.name)
+def draw_prechat():
+    with st.container():
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image(st.session_state.actor.image, width=300)
+
+        with col2:
+            st.markdown(
+                """
+                * test
+                * test
+                * test
+                """
+            )
+
+
+def draw_chat():
+    st.title(st.session_state.actor.name)
 
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:
@@ -47,12 +64,11 @@ if st.session_state.openai_api_key is None or not st.session_state.openai_api_ke
 
     st.caption("Please return to the home page and enter your :red[OpenAI API key].")
 else:
-    character = st.session_state.character
-
     with st.sidebar:
         settings()
 
-    if not character:
+    if not st.session_state.actor:
         st.subheader("캐릭터 화면으로 돌아가 캐릭터를 선택해주세요. :hugging_face:")
     else:
-        draw_chat(character)
+        draw_prechat()
+        draw_chat()

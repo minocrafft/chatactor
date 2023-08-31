@@ -4,9 +4,16 @@ from pathlib import Path
 import streamlit as st
 from streamlit_card import card
 from streamlit_extras.switch_page_button import switch_page
+from PIL import Image
 
 from chatactor.model import Actor, CardModel
-from functional.utils import on_click_card, divide_list, on_click_new_character
+from functional.utils import (
+    on_click_card,
+    divide_list,
+    add_new_character,
+    load_image,
+    download_images,
+)
 
 from functional.component import settings
 from functional.page import (
@@ -16,7 +23,7 @@ from functional.page import (
 )
 
 COLS = 2
-DB_ACTORS = "profiles/"
+PATH_ACTORS = "profiles"
 
 
 set_page_config()
@@ -32,22 +39,24 @@ else:
 
     st.title("캐릭터를 선택해주세요 :seedling:")
 
-    actors = list(Path(DB_ACTORS).glob("*.md"))
+    actors = [f"{PATH_ACTORS}/{file.stem}" for file in Path(PATH_ACTORS).glob("*.md")]
 
     for row in divide_list(actors, COLS):
         columns = st.columns(COLS)
         for file, col in zip(row, columns):
-            with col, open(str(file), "r") as f:
+            with col, open(f"{file}.md", "r") as f:
                 # model = Actor(**json.load(f))
                 model = CardModel(
-                    name=file.stem,
+                    name=file.split("/")[1],
+                    image=f"{file}.jpg",
+                    imagedata=load_image(f"{file}.jpg"),
                     content=f.read(),
                 )
 
                 clicked = card(
                     title=model.name,
                     text="",
-                    # image=model.image,
+                    image=model.imagedata,
                     styles={
                         "card": {
                             "width": "100%",
@@ -80,5 +89,5 @@ else:
         button = st.button(
             "Submit",
             type="primary",
-            on_click=lambda: on_click_new_character(new_character),
+            on_click=lambda: add_new_character(new_character),
         )
