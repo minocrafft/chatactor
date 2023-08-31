@@ -5,11 +5,12 @@ from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain.utilities import DuckDuckGoSearchAPIWrapper, WikipediaAPIWrapper
 from langchain.prompts import PromptTemplate
+from langchain.tools import WikipediaQueryRun
 
 
 def _build_tools() -> list[Tool]:
-    search = DuckDuckGoSearchAPIWrapper()
-    wiki = WikipediaAPIWrapper()
+    search = DuckDuckGoSearchAPIWrapper(region="kr-kr")
+    wiki = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper(lang="ko"))
     tools = [
         Tool(
             name="Search",
