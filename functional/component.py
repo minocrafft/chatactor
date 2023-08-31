@@ -31,32 +31,3 @@ def settings():
             When exceeded, older thoughts will be moved into a 'History' expander.
             """,
         )
-
-
-# def card(actor: Actor):
-#     with st.container():
-#         st.subheader(actor.name)
-#         col1, col2 = st.columns(2)
-#         with col1:
-#             if actor.image:
-#                 try:
-#                     st.image(load_img_from_url(actor.image))
-#                 except Exception as e:
-#                     print(e)
-#         with col2:
-#             button = st.button(
-#                 "Let's chat !",
-#                 key=actor.name,
-#                 type="primary",
-#                 on_click=lambda: on_click_card(actor),
-#             )
-#         table = {k: v for k, v in actor if k not in ("name", "image")}
-#         headers = ["information"]
-#
-#         df = pd.DataFrame.from_dict(table, orient="index", columns=headers)
-#         st.markdown(df.to_markdown())
-#
-#         st.divider()
-#
-#     if button:
-#         switch_page("chat")

@@ -1,16 +1,16 @@
 import json
-from typing import List
 
 from langchain.agents import ZeroShotAgent, Tool, AgentExecutor
 from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain.utilities import DuckDuckGoSearchAPIWrapper, WikipediaAPIWrapper
 from langchain.prompts import PromptTemplate
+from langchain.tools import WikipediaQueryRun
 
 
-def _build_tools() -> List[Tool]:
-    search = DuckDuckGoSearchAPIWrapper()
-    wiki = WikipediaAPIWrapper()
+def _build_tools() -> list[Tool]:
+    search = DuckDuckGoSearchAPIWrapper(region="kr-kr")
+    wiki = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper(lang="ko"))
     tools = [
         Tool(
             name="Search",
@@ -26,7 +26,7 @@ def _build_tools() -> List[Tool]:
     return tools
 
 
-def _build_prompt() -> PromptTemplate:
+def _build_prompt(tools: list[Tool] | None = None) -> PromptTemplate:
     prefix = """
     You are a Entertainment Reporter. 
     You have been tasked to profile a given person.
@@ -35,27 +35,19 @@ def _build_prompt() -> PromptTemplate:
     You have access to the following tools:"""
 
     suffix = """Begin! Remember to use the tools to find the information.
-    The Final Answer is json formatted. as follows:
+    The Final Answer is in json format, and not key, values must be written in Korean. as follows:
     You have to find the following information about the person:
     name: the person's name
-    image: the url of the person's image
     occupation: the person's occupation
-    summary: the summary of the person in 1-2 sentences
-    speaking style: the person's speaking style
     birth: the birth of the person formatted in YYYY-MM-DD
     death: the death of the person formatted in YYYY-MM-DD
-    events: List of the person's notable events while alive, the items of the list are formatted as follows:
-      event_name: the name of the event
-        event date: the date of the event formatted in YYYY-MM-DD
-        event description: A line of the description of the event
-      event_name: the name of the event ...
-
+    summary: the summary of the person in 1-2 sentences
 
     Person: {input}
     {agent_scratchpad}"""
 
     prompt = ZeroShotAgent.create_prompt(
-        tools,
+        tools if tools is not None else _build_tools(),
         prefix=prefix,
         suffix=suffix,
         input_variables=["input", "agent_scratchpad"],
@@ -71,8 +63,8 @@ class Profiler(ZeroShotAgent):
 
 
 def get_profiler(
-    tools: List[Tool] | None,
-    prompt: PromptTemplate | None,
+    tools: list[Tool] | None = None,
+    prompt: PromptTemplate | None = None,
 ) -> AgentExecutor:
     if tools is None:
         tools = _build_tools()

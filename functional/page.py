@@ -12,8 +12,8 @@ def initial_session_state():
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    if "character" not in st.session_state:
-        st.session_state.character = ""
+    if "actor" not in st.session_state:
+        st.session_state.actor = ""
 
 
 def description():

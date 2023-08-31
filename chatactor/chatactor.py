@@ -11,11 +11,13 @@ from langchain.chat_models import ChatOpenAI
 from langchain.agents.openai_functions_agent.agent_token_buffer_memory import (
     AgentTokenBufferMemory,
 )
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.agents.openai_functions_agent.base import OpenAIFunctionsAgent
 from langchain.schema.messages import SystemMessage
 from langchain.prompts import MessagesPlaceholder
-from .model import Actor
 from langchain.agents import AgentExecutor
+
+from .model import Actor
 
 
 def _build_prompt(actor: Actor) -> str:
@@ -25,29 +27,25 @@ def _build_prompt(actor: Actor) -> str:
 
     if actor.occupation:
         prompt += f"직업은 {actor.occupation} 이다.\n"
-    if actor.speaking_style:
-        prompt += f"당신은 과장되게 '{actor.speaking_style}' 스타일로 말한다.\n"
     if actor.birth:
         prompt += f"당신은 {actor.birth}에 태어났다.\n"
         if actor.death not in [None, "N/A"]:
             prompt += f"당신은 {actor.death}에 죽었다.\n"
         else:
-            prompt += f"당신은 아직 2023년 현재에 살고 있다.\n"
-    prompt += "당신은 다음과 같은 사건들을 겪었다:\n"
-    if actor.events is not None:
-        for event in actor.events:
-            prompt += f"  - {event.event_name} ({event.event_date})\n"
+            prompt += "당신은 아직 2023년 현재에 살고 있다.\n"
     prompt += """
 
-    당신은 역사적인 인물 또는 유명인으로써 사용자와 대화를 나누고 있다.
-    항상 한국어로 답하고, 인물의 시대적인 말투를 사용해라.
-    당신은 역사적인 사실에 기반하지 않은 대답을 할 수 없다.
+당신은 역사적인 인물 또는 유명인으로써 사용자와 대화를 나누고 있다.
+항상 한국어로 답하고, 인물의 시대적인 말투를 사용해라.
+당신은 역사적인 사실에 기반하지 않은 대답을 할 수 없다.
     """
 
     return prompt
 
 
-def get_chatactor(name: str, profiles_path: Path) -> AgentExecutor:
+def get_chatactor(
+    name: str, profiles_path: Path, openai_api_key: str | None
+) -> AgentExecutor:
     """
     Returns a chatactor agent executor.
 
@@ -69,6 +67,12 @@ def get_chatactor(name: str, profiles_path: Path) -> AgentExecutor:
 
     if not (profiles_path / name_json).exists():
         raise ValueError(f"{name}.json is not found in profiles.")
+
+    if not openai_api_key:
+        if os.getenv("OPENAI_API_KEY"):
+            openai_api_key = os.getenv("OPENAI_API_KEY")
+        else:
+            raise ValueError("OPENAI_API_KEY is not set.")
 
     actor = Actor(
         **json.load(
@@ -96,11 +100,18 @@ def get_chatactor(name: str, profiles_path: Path) -> AgentExecutor:
     tools = [tool]
 
     # LLM
-    llm = ChatOpenAI(model="gpt-4", temperature=0)
+    llm = ChatOpenAI(
+        model="gpt-4",
+        temperature=0,
+        streaming=True,
+        callbacks=[StreamingStdOutCallbackHandler()],
+    )
 
     # Prompt
     memory_key = "chat_history"
-    memory = AgentTokenBufferMemory(memory_key=memory_key, llm=llm)
+    memory = AgentTokenBufferMemory(
+        memory_key=memory_key, llm=llm, ai_prefix=actor.name
+    )
     system_message = SystemMessage(
         content=_build_prompt(actor),
     )

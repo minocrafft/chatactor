@@ -32,7 +32,7 @@ def wikipedia2markdown(
 
     html = html2text.html2text(page.text)
 
-    with open(os.path.join(path, f"{page.title}.md"), "w") as f:
+    with open(os.path.join(path, f"{query}.md"), "w") as f:
         f.write(html)
 
     return True
