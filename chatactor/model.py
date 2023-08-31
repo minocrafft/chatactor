@@ -21,5 +21,7 @@ class Actor(BaseModel):
 
 class CardModel(BaseModel):
     name: str
+    image: str
+    imagedata: str
     content: str
     summary: Optional[str] = None
