@@ -1,3 +1,4 @@
+import ssl
 import json
 import base64
 import os.path as osp
@@ -10,6 +11,8 @@ from duckduckgo_search import DDGS
 from chatactor.wikipedia import wikipedia2markdown
 from chatactor.profiler import get_profiler
 from functional.variables import DATADIR
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 def on_click_card(model):
@@ -90,4 +93,4 @@ def load_image(file):
     return data
 
 
-download_images("J. 로버트 오펜하이머")
+# download_images("J. 로버트 오펜하이머")
