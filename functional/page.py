@@ -15,6 +15,9 @@ def initial_session_state():
     if "actor" not in st.session_state:
         st.session_state.actor = ""
 
+    if "profiler_messages" not in st.session_state:
+        st.session_state.profiler_messages = []
+
 
 def description():
     # main pages

@@ -8,6 +8,7 @@ from functional.page import (
     description,
 )
 from functional.component import settings
+from functional.utils import download_images
 
 
 set_page_config()
