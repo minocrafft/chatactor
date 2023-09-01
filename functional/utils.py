@@ -17,6 +17,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 def on_click_card(model):
     st.session_state.actor = model
+    st.session_state.messages.clear()
 
 
 def submit_new_actor(key, openai_api_key):
@@ -91,6 +92,3 @@ def load_image(file):
 
     data = "data:image/png;base64," + encoded.decode("utf-8")
     return data
-
-
-# download_images("J. 로버트 오펜하이머")

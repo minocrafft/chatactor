@@ -8,7 +8,6 @@ from functional.page import (
     description,
 )
 from functional.component import settings
-from functional.utils import download_images
 
 
 set_page_config()
@@ -26,8 +25,6 @@ def draw_prechat():
 
 
 def draw_chat():
-    if current_actor != st.session_state.actor:
-        st.session_state.messages.clear()
 
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:
@@ -75,6 +72,5 @@ else:
     if not st.session_state.actor:
         st.subheader("캐릭터 화면으로 돌아가 캐릭터를 선택해주세요. :hugging_face:")
     else:
-        current_actor = st.session_state.actor
         draw_prechat()
         draw_chat()

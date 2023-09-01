@@ -108,5 +108,7 @@ else:
                     f"{summary['birth']} ~ {summary['death'] if summary['death'] else '현재'}"
                 )
                 st.write(summary["summary"])
+
+            st.experimental_rerun()
     else:
         st.caption(f"새로운 대화 상대를 검색해보세요. :hugging_face:")
