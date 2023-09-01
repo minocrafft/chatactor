@@ -75,10 +75,10 @@ def get_profiler(
         prompt = _build_prompt()
 
     if openai_api_key is None:
-        if "OPENAI_API_KEY" in os.environ.keys():
-            openai_api_key = os.environ.get("OPENAI_API_KEY")
-        else:
+        if os.getenv("OPENAI_API_KEY") is None:
             raise ValueError("OPENAI_API_KEY is not set.")
+        else:
+            openai_api_key = os.getenv("OPENAI_API_KEY")
 
     llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k")
     llm_chain = LLMChain(llm=llm, prompt=prompt)
