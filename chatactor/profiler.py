@@ -80,7 +80,9 @@ def get_profiler(
         else:
             openai_api_key = os.getenv("OPENAI_API_KEY")
 
-    llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k")
+    llm = ChatOpenAI(
+        temperature=0, model="gpt-3.5-turbo-16k", openai_api_key=openai_api_key
+    )
     llm_chain = LLMChain(llm=llm, prompt=prompt)
 
     tool_names = [tool.name for tool in tools]

@@ -105,6 +105,7 @@ def get_chatactor(
         temperature=0,
         streaming=True,
         callbacks=[StreamingStdOutCallbackHandler()],
+        openai_api_key=openai_api_key,
     )
 
     # Prompt
