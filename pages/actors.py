@@ -4,13 +4,16 @@ from pathlib import Path
 import streamlit as st
 from streamlit_card import card
 from streamlit_extras.switch_page_button import switch_page
+from langchain.callbacks import StreamlitCallbackHandler
 
 from chatactor.model import Actor, CardModel
+from chatactor.profiler import get_profiler
+from chatactor.wikipedia import wikipedia2markdown
 from functional.variables import COLS, DATADIR
 from functional.utils import (
+    download_images,
     on_click_card,
     divide_list,
-    submit_new_actor,
     load_image,
 )
 from functional.component import settings
@@ -67,21 +70,43 @@ else:
 
     st.divider()
 
-    col1, col2 = st.columns([4, 1])
-    with col1:
-        new_character = st.text_input(
-            label="새로운 캐릭터를 입력해보세요 :hatching_chick:",
-            placeholder="Here!",
-            help="""
-            새로운 캐릭터를 입력하면 해당 캐릭터의 프로필을 생성합니다.
+    for message in st.session_state.profiler_messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-            현재 새로운 캐릭터는 Wikipedia에서 찾을 수 있는 인물만 생성할 수 있습니다:exclamation: 
-            """,
-        )
+    agent = get_profiler(openai_api_key=st.session_state.openai_api_key)
+    prompt = st.chat_input("Message", key="message")
+    if prompt:
+        with st.chat_message("profiler", avatar="🕵"):
+            st_callback = StreamlitCallbackHandler(
+                st.container(),
+                max_thought_containers=int(st.session_state.max_thought_containers),
+                expand_new_thoughts=st.session_state.expand_new_thoughts,
+                collapse_completed_thoughts=st.session_state.collapse_completed_thoughts,
+            )
+            output = agent.run(prompt, callbacks=[st_callback])
+            summary = json.loads(output)  # json str -> dict
 
-    with col2:
-        button = st.button(
-            "Submit",
-            type="primary",
-            on_click=lambda: submit_new_actor(new_character),
-        )
+            with open(f"{DATADIR}/{summary['name']}.json", "w") as f:
+                json.dump(summary, f, indent=2, ensure_ascii=False)  # save as json file
+
+            with st.status(f"{summary['name']}를 조사하는 중.. :mag:", expanded=True):
+                wikipedia2markdown(summary["name"])
+
+            with st.status(f"{summary['name']}의 사진을 가져오는 중.. :camera:", expanded=True):
+                download_images(summary["name"])
+
+            output = summary
+            col1, col2 = st.columns([1, 3])
+            with col1:
+                st.image(f"{DATADIR}/{summary['name']}.jpg", use_column_width=True)
+
+            with col2:
+                st.write(f"# {summary['name']}")
+                st.write(f"{summary['occupation']}")
+                st.write(
+                    f"{summary['birth']} ~ {summary['death'] if summary['death'] else '현재'}"
+                )
+                st.write(summary["summary"])
+    else:
+        st.caption(f"새로운 대화 상대를 검색해보세요. :hugging_face:")
