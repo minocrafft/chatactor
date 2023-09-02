@@ -25,7 +25,6 @@ def draw_prechat():
 
 
 def draw_chat():
-
     # Display chat messages from history on app rerun
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
@@ -49,7 +48,10 @@ def draw_chat():
                 expand_new_thoughts=st.session_state.expand_new_thoughts,
                 collapse_completed_thoughts=st.session_state.collapse_completed_thoughts,
             )
-            response = agent(prompt, callbacks=[st_callback])
+            response = agent(
+                {"input": prompt, "chat_history": st.session_state.messages},
+                callbacks=[st_callback],
+            )
             output = response["output"]
             st.write(output)
             st.session_state.messages.append({"role": "assistant", "content": output})

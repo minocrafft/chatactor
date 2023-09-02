@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from openai import InvalidRequestError
 
 import streamlit as st
 from streamlit_card import card
@@ -84,31 +85,45 @@ else:
                 expand_new_thoughts=st.session_state.expand_new_thoughts,
                 collapse_completed_thoughts=st.session_state.collapse_completed_thoughts,
             )
-            output = agent.run(prompt, callbacks=[st_callback])
-            summary = json.loads(output)  # json str -> dict
+            try:
+                output = agent.run(prompt, callbacks=[st_callback])
+                summary = json.loads(output)  # json str -> dict
+                actor = Actor(**summary)  # dict -> Actor
 
-            with open(f"{DATADIR}/{summary['name']}.json", "w") as f:
-                json.dump(summary, f, indent=2, ensure_ascii=False)  # save as json file
+                with open(f"{DATADIR}/{actor.name}.json", "w") as f:
+                    json.dump(
+                        summary, f, indent=2, ensure_ascii=False
+                    )  # save as json file
 
-            with st.status(f"{summary['name']}를 조사하는 중.. :mag:", expanded=True):
-                wikipedia2markdown(summary["name"])
+                with st.status(f"{actor.name}를 조사하는 중.. :mag:", expanded=True):
+                    wikipedia2markdown(actor.name)
 
-            with st.status(f"{summary['name']}의 사진을 가져오는 중.. :camera:", expanded=True):
-                download_images(summary["name"])
+                with st.status(f"{actor.name}의 사진을 가져오는 중.. :camera:", expanded=True):
+                    download_images(actor.name)
 
-            output = summary
-            col1, col2 = st.columns([1, 3])
-            with col1:
-                st.image(f"{DATADIR}/{summary['name']}.jpg", use_column_width=True)
+                output = summary
 
-            with col2:
-                st.write(f"# {summary['name']}")
-                st.write(f"{summary['occupation']}")
-                st.write(
-                    f"{summary['birth']} ~ {summary['death'] if summary['death'] else '현재'}"
-                )
-                st.write(summary["summary"])
+                if actor.occupation is None:
+                    raise Exception("No occupation found.")
 
-            st.experimental_rerun()
+                if actor.birth is None:
+                    raise Exception("No birth found.")
+
+                col1, col2 = st.columns([1, 4])
+                with col1:
+                    st.image(f"{DATADIR}/{actor.name}.jpg", use_column_width=True)
+
+                with col2:
+                    st.write(f"# {actor.name}")
+                    st.write(f"{actor.occupation}")
+                    st.write(f"{actor.birth} ~ {actor.death if actor.death else '현재'}")
+                    st.write(f"{actor.summary}")
+
+                st.experimental_rerun()
+            except InvalidRequestError:
+                st.error(":warning: 조사에 실패했어요! 다시 시도해주세요. :warning:")
+
     else:
-        st.caption(f"새로운 대화 상대를 검색해보세요. :hugging_face:")
+        st.caption(f"현재 {len(actors)}명의 캐릭터가 있어요. :mag:")
+        st.caption("새로운 대화 상대를 검색해보세요. :hugging_face:")
+        st.caption(" 세종대왕, 이순신, 핵 만든 오펜하이머, 원피스 루피 등등..")
