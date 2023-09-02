@@ -39,10 +39,15 @@ def draw_chat():
     )
 
     prompt = st.chat_input("Message", key="message")
+
+    if not prompt and not st.session_state.messages:
+        prompt = "안녕하세요?"
+
     if prompt:
-        st.chat_message("user").write(prompt)
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        print("User:", prompt)
+        if prompt != "안녕하세요?":
+            st.chat_message("user").write(prompt)
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            print("User:", prompt)
 
         with st.chat_message("assistant"):
             st_callback = StreamlitCallbackHandler(

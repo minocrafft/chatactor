@@ -74,47 +74,45 @@ else:
     agent = get_profiler(openai_api_key=st.session_state.openai_api_key)
     prompt = st.chat_input("Message", key="message")
     if prompt:
-        with st.chat_message("profiler", avatar="🕵"):
-            st_callback = StreamlitCallbackHandler(
-                st.container(),
-                max_thought_containers=int(st.session_state.max_thought_containers),
-                expand_new_thoughts=st.session_state.expand_new_thoughts,
-                collapse_completed_thoughts=st.session_state.collapse_completed_thoughts,
-            )
-            try:
-                output = agent.run(prompt, callbacks=[st_callback])
-                summary = json.loads(output)  # json str -> dict
-                model = Actor(**summary)  # dict -> Actor
-                model.image = f"{DATADIR}/{model.name}.jpg"
-                model.content = f"""
-                * {model.occupation}
-                * {model.birth} ~ {model.death if model.death else '현재'}
-                * {model.summary}
-                
-                """
+        st_callback = StreamlitCallbackHandler(
+            st.container(),
+            max_thought_containers=int(st.session_state.max_thought_containers),
+            expand_new_thoughts=st.session_state.expand_new_thoughts,
+            collapse_completed_thoughts=st.session_state.collapse_completed_thoughts,
+        )
+        try:
+            output = agent.run(prompt, callbacks=[st_callback])
+            summary = json.loads(output)  # json str -> dict
+            model = Actor(**summary)  # dict -> Actor
+            model.image = f"{DATADIR}/{model.name}.jpg"
+            model.content = f"""
+            * {model.occupation}
+            * {model.birth} ~ {model.death if model.death else '현재'}
+            * {model.summary}
+            
+            """
 
-                with open(f"{DATADIR}/{model.name}.json", "w") as f:
-                    json.dump(
-                        summary, f, indent=2, ensure_ascii=False
-                    )  # save as json file
+            with open(f"{DATADIR}/{model.name}.json", "w") as f:
+                json.dump(summary, f, indent=2, ensure_ascii=False)  # save as json file
 
-                with st.status(f"{model.name}를 조사하는 중.. :mag:", expanded=True):
-                    wikipedia2markdown(model.name)
-                with st.status(f"{model.name}의 사진을 가져오는 중.. :camera:", expanded=True):
-                    download_images(model.name)
+            with st.status(f"{model.name}를 조사하는 중.. :mag:", expanded=True):
+                wikipedia2markdown(model.name)
+            with st.status(f"{model.name}의 사진을 가져오는 중.. :camera:", expanded=True):
+                download_images(model.name)
 
-                output = summary
+            output = summary
 
-                if model.occupation is None:
-                    raise Exception("No occupation found.")
+            if model.occupation is None:
+                raise Exception("No occupation found.")
 
-                if model.birth is None:
-                    raise Exception("No birth found.")
+            if model.birth is None:
+                raise Exception("No birth found.")
 
-                st.session_state.model = model
-                switch_page("chat")
-            except InvalidRequestError:
-                st.error(":warning: 조사에 실패했어요! 다시 시도해주세요. :warning:")
+            st.session_state.model = model
+            st.session_state.messages.clear()
+            switch_page("chat")
+        except InvalidRequestError:
+            st.error(":warning: 조사에 실패했어요! 다시 시도해주세요. :warning:")
 
     else:
         st.caption(f"현재 {len(actors)}명의 캐릭터가 있어요. :mag:")
