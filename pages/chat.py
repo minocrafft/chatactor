@@ -15,9 +15,9 @@ set_page_config()
 
 def draw_prechat():
     with st.container():
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns([1, 3])
         with col1:
-            st.image(st.session_state.actor.image, width=300)
+            st.image(st.session_state.actor.image)
 
         with col2:
             st.title(st.session_state.actor.name)
