@@ -23,19 +23,19 @@ def description():
     # main pages
     st.markdown(
         """
-        # Welcome to 🦜 Chat Actor!
+        # Welcome to 🦜 ChatActor!
 
-        안녕하세요! Chat Actor에 오신 것을 환영합니다! :wave:
+        안녕하세요! ChatActor에 오신 것을 환영합니다! :wave:
 
-        ## :thinking_face: Chat Actor가 무엇인가요?
+        ## :thinking_face: ChatActor가 무엇인가요?
         
         Chat Actor는 :red[**롤플레잉 역할 기반의 학습 플랫폼**]입니다.  
         다양한 캐릭터들로부터 대화를 통해 역사를 배우고, 지식을 습득할 수 있습니다.   
-        해당 인물과 실제로 대화하며, Chat Actor를 통해 역사를 배워보세요! :nerd_face:
+        해당 인물과 실제로 대화하며, ChatActor를 통해 역사를 배워보세요! :nerd_face:
         
         ---
 
-        ## Chat Actor는 어떻게 사용하나요:question:
+        ## ChatActor는 어떻게 사용하나요:question:
 
         1. 사이드바에서 원하는 캐릭터를 선택하거나 궁금한 인물을 찾아보세요 🔍.
         2. 대화를 시작합니다. :speech_balloon:
