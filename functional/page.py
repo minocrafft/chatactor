@@ -12,8 +12,8 @@ def initial_session_state():
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    if "actor" not in st.session_state:
-        st.session_state.actor = ""
+    if "model" not in st.session_state:
+        st.session_state.model = ""
 
     if "profiler_messages" not in st.session_state:
         st.session_state.profiler_messages = []
