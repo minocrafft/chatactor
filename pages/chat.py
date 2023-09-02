@@ -14,14 +14,15 @@ set_page_config()
 
 
 def draw_prechat():
+    model = st.session_state.model
     with st.container():
         col1, col2 = st.columns([1, 3])
         with col1:
-            st.image(st.session_state.actor.image)
+            st.image(model.image)
 
         with col2:
-            st.title(st.session_state.actor.name)
-            st.markdown("\n\n * ".join(st.session_state.actor.content))
+            st.title(model.name)
+            st.markdown(model.content)
     st.divider()
 
 
@@ -32,7 +33,7 @@ def draw_chat():
             st.markdown(message["content"])
 
     agent = get_chatactor(
-        name=st.session_state.actor.name,
+        name=st.session_state.model.name,
         profiles_path=Path("profiles"),
         openai_api_key=st.session_state.openai_api_key,
     )
@@ -58,7 +59,7 @@ def draw_chat():
             st.write(output)
             st.session_state.messages.append({"role": "assistant", "content": output})
     else:
-        st.caption(f"{st.session_state.actor.name}과 대화를 시작해보세요. :hugging_face:")
+        st.caption(f"{st.session_state.model.name}과 대화를 시작해보세요. :hugging_face:")
 
 
 if (
@@ -73,7 +74,7 @@ else:
     with st.sidebar:
         settings()
 
-    if not st.session_state.actor:
+    if not st.session_state.model:
         st.subheader("캐릭터 화면으로 돌아가 캐릭터를 선택해주세요. :hugging_face:")
     else:
         draw_prechat()

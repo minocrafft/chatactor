@@ -41,20 +41,17 @@ else:
         for file, col in zip(row, columns):
             with col, open(f"{file}.json", "r") as f:
                 model = Actor(**json.load(f))
-                cardmodel = CardModel(
-                    name=model.name,
-                    image=f"{file}.jpg",
-                    imagedata=load_image(f"{file}.jpg"),
-                    content=[
-                        model.occupation,
-                        f"{model.birth} ~ {model.death if model.death else '현재'}",
-                        model.summary,
-                    ],
-                )
+                model.image = f"{file}.jpg"
+                model.content = f"""
+                * {model.occupation}
+                * {model.birth} ~ {model.death if model.death else '현재'}
+                * {model.summary}
+                
+                """
                 clicked = card(
-                    title=cardmodel.name,
-                    text=cardmodel.content,
-                    image=cardmodel.imagedata,
+                    title=model.name,
+                    text=model.content,
+                    image=load_image(f"{model.image}"),
                     styles={
                         "card": {
                             "width": "100%",
@@ -63,7 +60,7 @@ else:
                             "padding": "0px",
                         }
                     },
-                    on_click=lambda: on_click_card(cardmodel),
+                    on_click=lambda: on_click_card(model),
                 )
 
                 if clicked:
@@ -88,38 +85,35 @@ else:
             try:
                 output = agent.run(prompt, callbacks=[st_callback])
                 summary = json.loads(output)  # json str -> dict
-                actor = Actor(**summary)  # dict -> Actor
+                model = Actor(**summary)  # dict -> Actor
+                model.image = f"{DATADIR}/{model.name}.jpg"
+                model.content = f"""
+                * {model.occupation}
+                * {model.birth} ~ {model.death if model.death else '현재'}
+                * {model.summary}
+                
+                """
 
-                with open(f"{DATADIR}/{actor.name}.json", "w") as f:
+                with open(f"{DATADIR}/{model.name}.json", "w") as f:
                     json.dump(
                         summary, f, indent=2, ensure_ascii=False
                     )  # save as json file
 
-                with st.status(f"{actor.name}를 조사하는 중.. :mag:", expanded=True):
-                    wikipedia2markdown(actor.name)
-
-                with st.status(f"{actor.name}의 사진을 가져오는 중.. :camera:", expanded=True):
-                    download_images(actor.name)
+                with st.status(f"{model.name}를 조사하는 중.. :mag:", expanded=True):
+                    wikipedia2markdown(model.name)
+                with st.status(f"{model.name}의 사진을 가져오는 중.. :camera:", expanded=True):
+                    download_images(model.name)
 
                 output = summary
 
-                if actor.occupation is None:
+                if model.occupation is None:
                     raise Exception("No occupation found.")
 
-                if actor.birth is None:
+                if model.birth is None:
                     raise Exception("No birth found.")
 
-                col1, col2 = st.columns([1, 4])
-                with col1:
-                    st.image(f"{DATADIR}/{actor.name}.jpg", use_column_width=True)
-
-                with col2:
-                    st.write(f"# {actor.name}")
-                    st.write(f"{actor.occupation}")
-                    st.write(f"{actor.birth} ~ {actor.death if actor.death else '현재'}")
-                    st.write(f"{actor.summary}")
-
-                st.experimental_rerun()
+                st.session_state.model = model
+                switch_page("chat")
             except InvalidRequestError:
                 st.error(":warning: 조사에 실패했어요! 다시 시도해주세요. :warning:")
 

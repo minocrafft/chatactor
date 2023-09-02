@@ -8,6 +8,7 @@ import openai
 import streamlit as st
 from duckduckgo_search import DDGS
 
+from chatactor.model import Actor
 from chatactor.wikipedia import wikipedia2markdown
 from chatactor.profiler import get_profiler
 from functional.variables import DATADIR
@@ -15,8 +16,8 @@ from functional.variables import DATADIR
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
-def on_click_card(model):
-    st.session_state.actor = model
+def on_click_card(model: Actor):
+    st.session_state.model = model
     st.session_state.messages.clear()
 
 
