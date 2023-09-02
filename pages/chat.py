@@ -40,6 +40,7 @@ def draw_chat():
     if prompt:
         st.chat_message("user").write(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
+        print("User:", prompt)
 
         with st.chat_message("assistant"):
             st_callback = StreamlitCallbackHandler(
