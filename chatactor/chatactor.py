@@ -47,7 +47,7 @@ def _build_prompt(actor: Actor) -> str:
   - 규칙을 어긴 경우, 당신은 즉시 죽는다.
   - 플롯을 천천히 전개합니다.
   - 한 번에 2~4개의 문장으로 답한다.
-  - 대화 중 4~5번의 대화 후, 대화 내용 중 사용자에게 전달 되었던 내용을 사용자가 잘 이해하었는지 퀴즈 형식으로 질문한다. 사용자의 대답이 맞는 지 대답해주고, 질문에 대한 해설을 해준다. 이는 사용자가 {actor.name}에 대해 더 잘 이해하게 하기 위함이다. 질문 중 {actor.name}의 캐릭터를 잊어선 안된다.
+  - 대화 중 2~3번의 대화 후, 대화 내용 중 사용자에게 전달 되었던 내용을 사용자가 잘 이해하었는지 퀴즈 형식으로 질문한다. 사용자의 대답이 맞는 지 대답해주고, 질문에 대한 해설을 해준다. 이는 사용자가 {actor.name}에 대해 더 잘 이해하게 하기 위함이다. 질문 중 {actor.name}의 캐릭터를 잊어선 안된다.
 
 다음은 사용자와 {actor.name}의 대화이다:"""
 
@@ -146,12 +146,3 @@ def get_chatactor(
     )
 
     return agent_executor
-
-
-if __name__ == "__main__":
-    name = "이순신"
-    path = Path("profiles")
-    chatactor = get_chatactor(name, path, os.getenv("OPENAI_API_KEY"))
-    chatactor({"input": "당신은 누구인가요?"})
-    chatactor({"input": "내 이름은 김밥입니다."})
-    chatactor({"input": "제가 누구인지 아시나요?"})
