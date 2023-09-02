@@ -20,7 +20,6 @@ from functional.utils import (
 from functional.component import settings
 from functional.page import set_page_config, initial_session_state, description
 
-
 set_page_config()
 initial_session_state()
 
