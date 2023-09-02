@@ -22,6 +22,7 @@ def draw_prechat():
         with col2:
             st.title(st.session_state.actor.name)
             st.markdown("\n\n * ".join(st.session_state.actor.content))
+    st.divider()
 
 
 def draw_chat():
