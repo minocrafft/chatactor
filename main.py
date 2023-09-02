@@ -14,6 +14,7 @@ set_page_config()
 with st.container():
     description()
     apikey = st.secrets["OPENAI_API_KEY"]
+    # apikey = os.getenv("OPENAI_API_KEY")
 
     run = st.button("시작하기", type="primary", use_container_width=True)
 
