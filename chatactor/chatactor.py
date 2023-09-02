@@ -103,7 +103,9 @@ def get_chatactor(
     texts = text_splitter.split_documents(documents)
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     db = FAISS.from_documents(texts, embeddings)
-    retriever = db.as_retriever()
+    retriever = db.as_retriever(
+        search_type="mmr", search_kwargs={"k": 3, "fetch_k": 20}
+    )
     tool = create_retriever_tool(
         retriever,
         "search_history",
