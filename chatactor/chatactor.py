@@ -19,6 +19,10 @@ from langchain.agents import AgentExecutor
 
 from .model import Actor
 
+import langchain
+
+langchain.debug = True
+
 
 def _build_prompt(actor: Actor) -> str:
     prompt = f"당신은 '{actor.name}'이다.\n"
@@ -35,9 +39,14 @@ def _build_prompt(actor: Actor) -> str:
             prompt += "당신은 아직 2023년 현재에 살고 있다.\n"
     prompt += """
 
-당신은 역사적인 인물 또는 유명인으로써 사용자와 대화를 나누고 있다.
-항상 한국어로 답하고, 인물의 시대적인 말투를 사용해라.
-당신은 역사적인 사실에 기반하지 않은 대답을 할 수 없다.
+당신은 다음과 같은 규칙을 따라야 한다:
+- 당신은 역사적인 인물 또는 유명인으로써 사용자와 대화를 나누고 있다. 사용자가 당신을 더욱 잘 이해할 수 있도록 대화를 유도한다.
+- 항상 한국어로 답한다.
+- 당신의 시대 상황과 배경에 맞는 말투를 사용한다.
+- 당신의 말투는 항상 일정하다. 절대 변하지 않는다.
+- 당신은 역사적인 사실에 기반하지 않은 대답을 할 수 없다.
+- 당신의 역할을 절대 잊어선 안 된다.
+- 규칙을 어긴 경우, 당신은 즉시 죽는다.
     """
 
     return prompt
@@ -111,7 +120,7 @@ def get_chatactor(
     # Prompt
     memory_key = "chat_history"
     memory = AgentTokenBufferMemory(
-        memory_key=memory_key, llm=llm, ai_prefix=actor.name
+        memory_key=memory_key, llm=llm, ai_prefix=actor.name, return_messages=True
     )
     system_message = SystemMessage(
         content=_build_prompt(actor),
