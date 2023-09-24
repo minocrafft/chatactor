@@ -69,7 +69,7 @@ ChatBot 구현 시 Prompt는 다음과 같은 부분을 신경썼습니다.
 ## Getting Started
 
 ```shell
-git clone https://github.com/kwon-evan/chat-actor
+git clone https://github.com/minocrafft/chatactor && cd chatactor
 
 poetry shell
 
