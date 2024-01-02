@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "chat-actor"
+name = "chatactor"
 version = "0.2.0"
 description = ""
 authors = ["heonjin <87924725+kwon-evan@users.noreply.github.com>", "minocrafft <minocrafft@gmail.com>"]
@@ -9,8 +9,8 @@ packages = [{include = "chatactor"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-langchain = "^0.0.268"
-openai = "^0.27.8"
+langchain = "^0.0.353"
+openai = "^1.6.1"
 watchdog = "^3.0.0"
 streamlit = "^1.26.0"
 duckduckgo-search = "^3.8.5"
@@ -18,12 +18,13 @@ wikipedia = "^1.4.0"
 langchain-experimental = "^0.0.10"
 streamlit-chat = "^0.1.1"
 streamlit-extras = "^0.3.0"
-pydantic = "^2.3.0"
+pydantic = "^2.5.3"
 streamlit-card = "^0.0.61"
 wikipedia-api = "^0.6.0"
 html2text = "^2020.1.16"
-tiktoken = "^0.4.0"
+tiktoken = "^0.5.2"
 faiss-cpu = "^1.7.4"
+docarray = "^0.40.0"
 
 
 [build-system]
