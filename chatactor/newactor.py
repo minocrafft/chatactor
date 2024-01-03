@@ -1,26 +1,20 @@
 import json
 
-from langchain.llms import Ollama
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain, create_history_aware_retriever
-from langchain_core.messages import HumanMessage, AIMessage
 
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-    MessagesPlaceholder,
-)
+from langchain.prompts.chat import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
 from langchain.tools.retriever import create_retriever_tool
 
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
-from langchain_experimental.chat_models import Llama2Chat
-from langchain.schema import SystemMessage
+from langchain.schema import HumanMessage, SystemMessage, AIMessage
+from langchain_community.chat_models import ChatOpenAI
 
 from chatactor import Actor
 
@@ -65,18 +59,27 @@ def get_actor():
 
     # Prompt
     actor = Actor(**json.load(open("actor.json", "r", encoding="utf-8")))
-    template_message = [
-        SystemMessage(content=build_prompt(actor)),
-        MessagesPlaceholder(variable_name="chat_history"),
-        HumanMessagePromptTemplate.from_template("{input}"),
-    ]
-    prompt = ChatPromptTemplate.from_messages(template_message)
 
     # Chat Models
+    llm = ChatOpenAI(
+        model="gpt-4",
+        temperature=0,
+        api_key="Key",
+    )
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            SystemMessage(content=build_prompt(actor)),
+            MessagesPlaceholder(variable_name="chat_history"),
+            HumanMessage(content="{input}"),
+        ]
+    )
+    memory = ConversationBufferMemory()
+    # conversation = ConversationChain(llm=llm, verbose=True, memory=memory)
 
     # Agent
 
-    llm = Ollama(model="llama2")
+    # llm = Ollama(model="llama2")
 
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-mpnet-base-v2",  # for Korean: "jhgan/ko-sroberta-multitask"
@@ -89,17 +92,6 @@ def get_actor():
     text_splitter = RecursiveCharacterTextSplitter()
     documents = text_splitter.split_documents(docs)
     vector = FAISS.from_documents(documents, embeddings)
-
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            MessagesPlaceholder(variable_name="history"),
-            ("user", "{input}"),
-            (
-                "user",
-                "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation",
-            ),
-        ]
-    )
 
     retriever = vector.as_retriever()
     retriever_chain = create_history_aware_retriever(llm, retriever, prompt)
