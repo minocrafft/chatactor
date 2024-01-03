@@ -15,7 +15,7 @@ watchdog = "^3.0.0"
 streamlit = "^1.26.0"
 duckduckgo-search = "^3.8.5"
 wikipedia = "^1.4.0"
-langchain-experimental = "^0.0.10"
+langchain-experimental = "^0.0.47"
 streamlit-chat = "^0.1.1"
 streamlit-extras = "^0.3.0"
 pydantic = "^2.5.3"
@@ -25,6 +25,7 @@ html2text = "^2020.1.16"
 tiktoken = "^0.5.2"
 faiss-cpu = "^1.7.4"
 docarray = "^0.40.0"
+langchain-nvidia-ai-endpoints = "^0.0.1"
 
 
 [build-system]
